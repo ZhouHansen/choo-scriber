@@ -1,0 +1,37 @@
+{
+  "scribeButtons":[
+    {
+      "text":"画线",
+      "id":"line",
+      "class":"btn btn-outline-success",
+    },
+    {
+      "text":"选点",
+      "id":"ctrlline",
+      "class":"btn btn-outline-success",
+    },
+    {
+      "text":"移动",
+      "id":"move",
+      "class":"btn btn-outline-success",
+    },
+    {
+      "text":"删除",
+      "id":"remove",
+      "class":"btn btn-outline-danger",
+    }
+  ],
+
+  "storeButtons":[
+    {
+      "text":"Fetch",
+      "class":"btn btn-outline-primary crud",
+      "id":"fetch"
+    },
+    {
+      "text":"Save",
+      "class":"btn btn-outline-warning crud",
+      "id":"save"
+    }
+  ]
+}

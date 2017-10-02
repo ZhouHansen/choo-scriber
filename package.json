@@ -1,0 +1,34 @@
+{
+  "name": "choo-scriber",
+  "version": "0.0.1",
+  "description": "scriber powered by choo",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js --live"
+  },
+  "author": "zhouhansen <z308114274@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "bootstrap": "4.0.0",
+    "choo": "^6.0.1",
+    "jquery": "^3.2.1",
+    "mitt": "^1.1.2",
+    "sheetify": "^6.2.0",
+    "sheetify-cssnext": "^1.0.7",
+    "spinkit": "^1.2.5",
+    "yuki-createjs": "0.0.3"
+  },
+  "devDependencies": {
+    "budo": "^10.0.4"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "sheetify",
+        {
+          "u": "sheetify-cssnext"
+        }
+      ]
+    ]
+  }
+}

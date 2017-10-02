@@ -1,0 +1,36 @@
+button{
+  cursor: pointer;
+}
+
+#save{
+	float: right
+}
+
+#save:focus{
+	outline:0 !important;
+}
+
+#fetch:focus{
+	outline:0 !important;
+}
+
+.sk-three-bounce{
+  width: auto !important;
+  display: inline-block;
+  margin: 0 !important;
+  margin-left: 5px !important;
+}
+
+.sk-three-bounce .sk-child{
+  width: 10px !important;
+  margin-left: 3px !important;
+  height: 10px !important;
+}
+
+.btn-outline-primary .sk-child{
+  background-color: #0275d8 !important;
+}
+
+.btn-outline-warning .sk-child{
+  background-color: #f0ad4e !important;
+}
