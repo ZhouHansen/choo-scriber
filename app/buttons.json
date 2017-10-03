@@ -1,22 +1,22 @@
 {
   "scribeButtons":[
     {
-      "text":"画线",
+      "text":"Line",
       "id":"line",
       "class":"btn btn-outline-success",
     },
     {
-      "text":"选点",
+      "text":"Select",
       "id":"ctrlline",
       "class":"btn btn-outline-success",
     },
     {
-      "text":"移动",
+      "text":"Move",
       "id":"move",
       "class":"btn btn-outline-success",
     },
     {
-      "text":"删除",
+      "text":"Remove",
       "id":"remove",
       "class":"btn btn-outline-danger",
     }

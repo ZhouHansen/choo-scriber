@@ -9,6 +9,7 @@ module.exports = function(state, emitter){
     ctrls:[],
     currentId: '',
     preId: '',
+    countId: 0,
     container: {
       x:0,
       y:0
@@ -27,20 +28,22 @@ module.exports = function(state, emitter){
   })
 
   emitter.on('addPoint', nOne=>{
+
     if (!state.fetch){
       state.preId = state.currentId
       state.currentId = nOne.uid
       emitter.emit('changeCurrent')
+      state.points.push(nOne)
     }
+    var ni = state.points.indexOf(nOne)
 
-    state.points.push(nOne)
-    var oOne = state.points[state.points.length - 2]
+    var oOne = state.points[ni - 1]
     addPoint(nOne, state, emitter)
 
-    if (state.points.indexOf(nOne) !== 0){
+    if (ni !== 0){
       addLine(oOne, nOne, state, emitter)
     }
-    console.log(state)
+
   })
 
   emitter.on('removePoint', uid=>{
@@ -104,8 +107,13 @@ module.exports = function(state, emitter){
     } else {
       var arr = state.ctrls.slice(0)
       var i = state.ctrls.indexOf(ctrl)
-      if (ctrl.isMirror !== isMirror&&isMirror===false){
-        emitter.emit('removeMirrorCtrl', uid)
+      if (ctrl.isMirror !== isMirror){
+        if (isMirror===false){
+          emitter.emit('removeMirrorCtrl', uid)
+        } else if (isMirror === true){
+          emitter.emit('removeUnMirrorCtrl', uid)
+        }
+
       }
       ctrl = {uid, x, y, isMirror}
       arr[i] = ctrl
@@ -126,6 +134,10 @@ module.exports = function(state, emitter){
     emitter.emit('removeOnlyCtrl', uid)
   })
 
+  emitter.on('increaseCountId', ()=>{
+    state.countId++
+  })
+
   emitter.on('pulling', ()=>{
     state.fetch = true
     emitter.emit('render')
@@ -138,22 +150,36 @@ module.exports = function(state, emitter){
 
   emitter.on('pulled', ()=>{
     container.removeAllChildren()
+
     stage.update()
 
-    emitter.removeAllListeners([
+    var scribeEvents = [
       'removeOnlyCtrl',
       'moveCtrl',
       'createCtrl',
       'removeMirrorCtrl',
+      'removeUnMirrorCtrl',
       'changeCurrent',
       'remove'
-    ])
+    ]
+    scribeEvents.forEach(eventName=>{
+      emitter.removeAllListeners(eventName)
+    })
 
     Object.assign(state, JSON.parse(localStorage.getItem("chooData")))
+
     state.fetch = true
-    console.log(state)
+
+    moveContainer(state.container)
+
     state.points.forEach((p, i)=>{
       emitter.emit('addPoint', p)
+
+      var ctrl = state.ctrls.find(ctrl=>ctrl.uid === p.uid)
+
+      if (ctrl){
+        emitter.emit('createCtrl', ctrl)
+      }
     })
 
     $('#'+state.drawType).focus()

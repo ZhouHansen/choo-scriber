@@ -47,6 +47,6 @@ module.exports = ({x, y, uid}, state, emitter)=>{
   emitter.on('createCtrl', ({uid, x, y, isMirror})=>{
     if (point.uid !== uid) return
 
-    addCtrl({uid, x, y, isMirror: isMirror}, state, emitter)
+    addCtrl({uid, x, y, isMirror: isMirror}, state, emitter, point.x, point.y)
   })
 }

@@ -5,24 +5,24 @@ function drawCurve(g, ctrls, oOne, nOne){
 
   g.setStrokeStyle(1)
    .beginStroke("#000")
-   .moveTo(nOne.x, nOne.y)
+   .moveTo(x, y)
 
    if (oCtrl !== void 0 && nCtrl === void 0){
-     g.quadraticCurveTo(oCtrl.x, oCtrl.y, x, y)
+     g.quadraticCurveTo(oCtrl.x, oCtrl.y, nOne.x, nOne.y)
    } else if (oCtrl === void 0 && nCtrl !== void 0){
      if (nCtrl.isMirror){
-       g.quadraticCurveTo(nCtrl.x, nCtrl.y, x, y)
+       g.quadraticCurveTo(2*nOne.x-nCtrl.x, 2*nOne.y-nCtrl.y, nOne.x, nOne.y)
      } else {
-       g.lineTo(x, y)
+       g.lineTo(nOne.x, nOne.y)
      }
    } else if (oCtrl !== void 0 && nCtrl !== void 0){
      if (nCtrl.isMirror){
-       g.bezierCurveTo(nCtrl.x, nCtrl.y, oCtrl.x, oCtrl.y, x, y)
+       g.bezierCurveTo(oCtrl.x, oCtrl.y, 2*nOne.x-nCtrl.x, 2*nOne.y-nCtrl.y, nOne.x, nOne.y)
      } else {
-       g.quadraticCurveTo(oCtrl.x, oCtrl.y, x, y)
+       g.quadraticCurveTo(oCtrl.x, oCtrl.y, nOne.x, nOne.y)
      }
    } else {
-     g.lineTo(x, y)
+     g.lineTo(nOne.x, nOne.y)
    }
 }
 

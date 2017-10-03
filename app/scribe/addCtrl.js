@@ -1,9 +1,7 @@
 const { ctrlRemovable } = require('./decorate.js')
 
-function moveCtrl (square, line, x, y, uid, isMirror, ctrlx, ctrly) {
+function moveCtrl (square, line, x, y, uid, isMirror, ctrlx, ctrly, state) {
   requestAnimationFrame(()=>{
-    drawSquare(square)
-
     if (square.isMirror&& isMirror){
       square.x = 2 * x - ctrlx
       square.y = 2 * y - ctrly
@@ -12,8 +10,12 @@ function moveCtrl (square, line, x, y, uid, isMirror, ctrlx, ctrly) {
       square.y = ctrly
     }
 
-    line.graphics.clear()
-    drawLine(line, x, y, square.x, square.y)
+    if (state.currentId === uid) {
+      line.graphics.clear()
+      drawSquare(square)
+      drawLine(line, x, y, square.x, square.y)
+    }
+
     line.from = {x, y}
     line.to = {x: square.x , y: square.y}
 
@@ -21,14 +23,18 @@ function moveCtrl (square, line, x, y, uid, isMirror, ctrlx, ctrly) {
   })
 }
 
-function createCtrl ({uid, x, y, isMirror}, state, emitter){
+function createCtrl ({uid, x, y, isMirror}, state, emitter, pointx, pointy){
   var square = new createjs.Shape()
   var line = new createjs.Shape()
 
-  drawSquare(square)
+  if (state.fetch){
+    moveCtrl(square, line, pointx, pointy, uid, isMirror, x, y, state)
+  } else {
+    drawSquare(square)
+    square.x = x
+    square.y = y
+  }
 
-  square.x = x
-  square.y = y
   square.uid = uid
   square.isMirror = isMirror
   line.uid = uid
@@ -58,22 +64,28 @@ function drawLine(line, x, y, x2, y2){
       .lineTo(x2, y2)
 }
 
-module.exports = ({uid, x, y, isMirror}, state, emitter)=>{
-  const {square, line} = createCtrl({uid, x, y, isMirror:false}, state, emitter)
+module.exports = ({uid, x, y, isMirror}, state, emitter, pointx, pointy)=>{
+  const {square, line} = createCtrl({uid, x, y, isMirror:false}, state, emitter, pointx, pointy)
+  var square2, line2
 
   if (isMirror){
-    var o = createCtrl({uid, x, y, isMirror:true}, state, emitter)
-    var square2 = o.square
-    var line2 = o.line
+    var o = createCtrl({uid, x, y, isMirror:true}, state, emitter, pointx, pointy)
+    square2 = o.square
+    line2 = o.line
   }
 
   emitter.on('moveCtrl', ctrl=>{
     if (ctrl.uid !== uid) return
 
-    moveCtrl(square, line, x, y, uid, false, ctrl.x, ctrl.y)
+    moveCtrl(square, line, pointx, pointy, uid, false, ctrl.x, ctrl.y, state)
 
     if (isMirror&&ctrl.isMirror){
-      moveCtrl(square2, line2, x, y, uid, true, ctrl.x, ctrl.y)
+      if (square2 === void 0){
+        var o = createCtrl({uid, x, y, isMirror:true}, state, emitter, pointx, pointy)
+        square2 = o.square
+        line2 = o.line
+      }
+      moveCtrl(square2, line2, pointx, pointy, uid, true, ctrl.x, ctrl.y, state)
     }
   })
 
@@ -116,9 +128,16 @@ module.exports = ({uid, x, y, isMirror}, state, emitter)=>{
 
   emitter.on('removeMirrorCtrl', ruid=>{
     if (ruid === uid){
+      isMirror = false
       square2.graphics.clear()
       line2.graphics.clear()
       stage.update()
+    }
+  })
+
+  emitter.on('removeUnMirrorCtrl', ruid=>{
+    if (ruid === uid){
+      isMirror = true
     }
   })
 }

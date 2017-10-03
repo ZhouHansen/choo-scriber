@@ -2,11 +2,10 @@ var html = require('choo/html')
 var css = require('sheetify')
 require('yuki-createjs')
 
-var countId = 0
-
 window.createjs = createjs
 
 css('../styles/scribeCanvas.css')
+var isLoad = false
 
 var stage = new createjs.Stage("canvas")
 
@@ -14,14 +13,16 @@ var container = new createjs.Container()
 
 stage.addChild(container)
 
-function unique(prefix){
-  var id = ++countId + '';
+function unique(prefix, state, emit){
+  emit('increaseCountId')
+  var id = state.countId + '';
   return prefix ? prefix + id : id;
 }
 
 function onmousedown(state, emit){
   return e=>{
     setTimeout(()=>{
+
       if (state.drawType !== 'line') return
 
       if (state.isPreventEvent){
@@ -32,7 +33,7 @@ function onmousedown(state, emit){
 
       var x = e.pageX - $(e.target).offset().left - state.container.x
         , y = e.pageY - $(e.target).offset().top - state.container.y
-        , uid = unique('p_')
+        , uid = unique('p_', state, emit)
 
       emit('addPoint', {x, y, uid})
       emit('mouseDown', true)
@@ -79,7 +80,10 @@ module.exports = (state, emit)=>{
         onmousemove=${onmousemove(state, emit)}
         onmouseup=${onmouseup(state, emit)}>
         ${setTimeout(()=>{
-          onload(state, emit)
+          if (!isLoad){
+            isLoad = true
+            onload(state, emit)
+          }
         },0)}
       </canvas>
     </div>
