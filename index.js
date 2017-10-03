@@ -28,6 +28,7 @@ var app = choo()
 
 app.use(store)
 app.route('/', mainView)
+app.route('/choo-scriber', mainView)
 app.mount('body')
 
 function mainView(state, emit){
