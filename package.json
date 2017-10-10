@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "budo index.js --live",
-    "build": "browserify index.js > ./build/bundle.js"
+    "build": "mkdir -p build && browserify index.js > ./build/bundle.js && create-html --title 'choo-scriber' --body '<div></div>' --script bundle.js --output ./build/index.html"
   },
   "author": "zhouhansen <z308114274@gmail.com>",
   "license": "MIT",
@@ -13,7 +13,6 @@
     "bootstrap": "4.0.0",
     "choo": "^6.0.1",
     "jquery": "^3.2.1",
-    "mitt": "^1.1.2",
     "sheetify": "^6.2.0",
     "sheetify-cssnext": "^1.0.7",
     "spinkit": "^1.2.5",
