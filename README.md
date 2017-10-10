@@ -1,4 +1,4 @@
-# scribe
+# Scribe
 
 > A choo project
 
@@ -11,3 +11,7 @@ npm start
 # build for production with minification
 npm run build
 ```
+
+## How to use
+
+https://www.youtube.com/watch?v=ZVMYe-qiKlA
