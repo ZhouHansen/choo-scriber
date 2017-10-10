@@ -7,7 +7,6 @@ var scribeCanvas = require('./app/components/scribeCanvas.js')
 var css = require('sheetify')
 
 window.$ = require('jquery')
-window.mitt = require('./app/mitt.js')
 
 const prefix = css`
   .flex-box{
