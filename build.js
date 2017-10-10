@@ -1,7 +1,7 @@
 var fs = require('fs')
 var mkdirp = require('mkdirp')
 var browserify = require('browserify')
-var createHTML = require('create-html')
+var html = require('bel')
 
 var b = browserify()
 
@@ -13,13 +13,21 @@ mkdirp('./build', ()=>{
       console.log('create bundle.js')
     })
 
-    var html = createHTML({
-      title:  "choo-scriber",
-      script: "bundle.js",
-      body: "<div></div>",
-    })
+    var indexHtml = html`
+      <!doctype html>
+      <html lang="en" dir="ltr">
+      <head>
+        <title>choo-scriber</title>
+        <meta charset="utf-8">
+      </head>
+      <body>
+        <div></div>
+        <script src="bundle.js"></script>
+      </body>
+      </html>
+    `
 
-    fs.writeFile('./build/index.html', html, ()=>{
+    fs.writeFile('./build/index.html', indexHtml, ()=>{
       console.log('create index.html')
     })
   })
