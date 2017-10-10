@@ -2,15 +2,16 @@ var fs = require('fs')
 var mkdirp = require('mkdirp')
 var browserify = require('browserify')
 var html = require('bel')
+var colors = require('colors')
 
 var b = browserify()
 
 mkdirp('./build', ()=>{
-  console.log('create builds folder')
+  console.log('create builds folder'.green)
   b.add('index.js')
   b.bundle((err, buf)=>{
     fs.writeFile('./build/bundle.js', buf, ()=>{
-      console.log('create bundle.js')
+      console.log('create bundle.js'.green)
     })
 
     var indexHtml = html`
@@ -28,7 +29,7 @@ mkdirp('./build', ()=>{
     `
 
     fs.writeFile('./build/index.html', indexHtml, ()=>{
-      console.log('create index.html')
+      console.log('create index.html'.green)
     })
   })
 })
