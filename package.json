@@ -5,10 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "budo index.js --live",
-    "build-folder": "mkdir -p build",
-    "build-bundle.js": "browserify index.js > ./build/bundle.js",
-    "build-index.html": "create-html -t 'choo-scriber' -b '<div></div>' -s bundle.js -o ./build/index.html",
-    "build": "npm run -s build-folder & npm run -s build-bundle.js & npm run -s build-index.html"
+    "build": "node build.js"
   },
   "author": "zhouhansen <z308114274@gmail.com>",
   "license": "MIT",
@@ -23,7 +20,10 @@
   },
   "devDependencies": {
     "brfs": "^1.4.3",
+    "browserify": "^14.4.0",
     "budo": "^10.0.4",
+    "create-html": "^4.0.0",
+    "mkdirp": "^0.5.1",
     "uglifyify": "^4.0.4"
   },
   "browserify": {
