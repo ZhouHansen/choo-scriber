@@ -3080,7 +3080,7 @@ sheetify-cssnext@^1.0.7:
     cssnext "^1.8.4"
     xtend "^4.0.0"
 
-sheetify-inline@^1.0.8:
+sheetify-inline@^1.0.9:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/sheetify-inline/-/sheetify-inline-1.0.8.tgz#cca6feb1e07d0aa2907ed66de1e977840b320f46"
   dependencies:
