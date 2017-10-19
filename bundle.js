@@ -40,85 +40,120 @@ module.exports={
 },{}],2:[function(require,module,exports){
 var html = require('choo/html')
 var css = 0
-var buttons = require("../buttons.json").scribeButtons
+var Nanocomponent = require('nanocomponent')
+var buttons = require('../buttons.json').scribeButtons
 
 ;((require('sheetify/insert')(".draw{\n\tmargin-top: 30px;\n\tdisplay: inline-block;\n}\n\n.draw button{\n\tdisplay: block;\n\tmargin-bottom: 20px;\n\tfloat: left;\n\tclear: both;\n}\n\n.draw #remove{\n\tmargin-bottom: 300px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC9zdHlsZXMvYXBwL3N0eWxlcy9zY3JpYmVCdXR0b24uY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0NBQ0MsaUJBQWlCO0NBQ2pCLHNCQUFzQjtDQUN0Qjs7QUFFRDtDQUNDLGVBQWU7Q0FDZixvQkFBb0I7Q0FDcEIsWUFBWTtDQUNaLFlBQVk7Q0FDWjs7QUFFRDtDQUNDLHFCQUFxQjtDQUNyQiIsImZpbGUiOiJ0by5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuZHJhd3tcblx0bWFyZ2luLXRvcDogMzBweDtcblx0ZGlzcGxheTogaW5saW5lLWJsb2NrO1xufVxuXG4uZHJhdyBidXR0b257XG5cdGRpc3BsYXk6IGJsb2NrO1xuXHRtYXJnaW4tYm90dG9tOiAyMHB4O1xuXHRmbG9hdDogbGVmdDtcblx0Y2xlYXI6IGJvdGg7XG59XG5cbi5kcmF3ICNyZW1vdmV7XG5cdG1hcmdpbi1ib3R0b206IDMwMHB4O1xufSJdfQ== */") || true) && "_f9c2b984")
 
-function buttonGenerate (state, emit){
+class Component extends Nanocomponent {
+  constructor () {
+    super()
+  }
 
-  var render = function (button){
+  createElement (state, emit) {
     return html`
-      <button
-        type="button"
-        class=${button.class}
-        id=${button.id}
-        onclick=${onclick}
-        onblur=${onblur}>
-          ${button.text}
-      </button>
+      <div class="draw">
+        ${buttons.map(button => {
+          return html`
+            <button
+              type="button"
+              class=${button.class}
+              id=${button.id}
+              onclick=${handleClick(emit)}
+              onblur=${handleBlur(state)}>
+                ${button.text}
+            </button>
+          `
+        })}
+      </div>
     `
   }
 
-  function onclick(e){
+  update () {
+    return false
+  }
+}
+
+function handleClick (emit) {
+  return e => {
     emit('changeDraw', e.target.id)
   }
+}
 
-  function onblur(e){
-    setTimeout(()=>{
-      if (e.target.id === state.drawType){
+function handleBlur (state) {
+  return e => {
+    setTimeout(() => {
+      if (e.target.id === state.drawType) {
         e.target.focus()
       }
     }, 120)
   }
-
-  return render
 }
 
-module.exports = (state, emit)=>{
-  return html`
-    <div class="draw">
-      ${buttons.map(buttonGenerate(state, emit))}
-    </div>
-  `
-}
+module.exports = new Component()
 
-},{"../buttons.json":1,"choo/html":15,"sheetify/insert":37}],3:[function(require,module,exports){
+},{"../buttons.json":1,"choo/html":16,"nanocomponent":27,"sheetify/insert":44}],3:[function(require,module,exports){
 var html = require('choo/html')
 var css = 0
+var Nanocomponent = require('nanocomponent')
 require('yuki-createjs')
 
 window.createjs = createjs
 
 ;((require('sheetify/insert')(".canvaswrap{\n\toverflow: hidden;\n\tmargin-left: 15px;\n\tmargin-top: 30px;\n\tdisplay: inline-block;\n\t-webkit-box-flex: 1;\n\t    -ms-flex-positive: 1;\n\t        flex-grow: 1;\n\tborder:2px solid #eee;\n\tposition: relative;\n}\n\ncanvas{\n\tposition: absolute;\n\ttop:0;\n\tcursor: crosshair;\n}\n\n#canvas.unable{\n\tcursor:not-allowed;\n}\n\n#canvas.remove{\n\tcursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASCAYAAABSO15qAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxQjRFQTg3MDgwQ0MxMUU2OERDRUNDQjcwQzRFOEMyRCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxQjRFQTg3MTgwQ0MxMUU2OERDRUNDQjcwQzRFOEMyRCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjFCNEVBODZFODBDQzExRTY4RENFQ0NCNzBDNEU4QzJEIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjFCNEVBODZGODBDQzExRTY4RENFQ0NCNzBDNEU4QzJEIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+zcpZOgAAAbRJREFUeNp8018onXEcx/GDczEWiow1NVoo8q+ptU5buHAjsyn/QrmZUnSIbSmb48/FRHKxC2wX5oaoCYXcSGTlxg0XjouVCzEuXFhCmvevPqeenp5znnrV85zze77P9/v9fX9hPp/P5XA9lL96folIrOO/dWG4y/lKRZruY5CjIIn2hW6Hl8vwQ18cRr4CPkETWrEYKoM4PEI0evEWy8jGCiaRESpAFP6gDxv6zYtm/MQtMoMFSNHiafTr3gS6xhesIsJauj2Aqe8Cc5jFA/SgRmWYsuIxgAZ7gOeoxDhK8FgBZvAbpWjEPtIxiiRrgA4c4BD1aEeRGvoMI1hTsCv4TSmBWopRjjpUaGDOUI33qFWGZh6y0K3Mjk2ABDVqHrF4jTf4qq/d6LlFJf7DBC4Dg5QLD9rwVPtcqEDvlIFp4J164w28HGiiX503NW/hG15o2pKRp/3/hB0s2Uf5SB02izaV3nfsqXELyrJAGTiehW01yAzPR52HLnzWOTD9mcKuPYB1G83WdOIVTjXGgxjT/0NOx9bpLJhZqNIWejR9H3DiFMDtCn790uCYaTwPtuhegAEA2uhaMYOh++oAAAAASUVORK5CYII='), auto;\n}\n\n#canvas.ctrlline{\n\tcursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo3QkIyRTFGRDgzOTcxMUU2QjJFQUJBODU5NzhEQjQxMiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo3QkIyRTFGRTgzOTcxMUU2QjJFQUJBODU5NzhEQjQxMiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjdCQjJFMUZCODM5NzExRTZCMkVBQkE4NTk3OERCNDEyIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjdCQjJFMUZDODM5NzExRTZCMkVBQkE4NTk3OERCNDEyIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+F0BIsQAAA2dJREFUeNpcU1lvE1cYvTN3vG8QOx5vcRw3cViSgFkdJalQoOWt6j/gAYEEPFSVgAdeIsF7qhZUNVIQ6oLahz6UTVXVSkEKTSkJdhwSxSEEiybO4ixObBN7xrP0TDRIiIdPc+/c757v+845lyGE5I1Gw3+SJP/i83m9RqNxdn19YzSRODppt9ukUqnMIIciJASHUBDqu3/UbDadFASx58CBtmfFYnl4ZSXfSyntyWReXgEYDQb9zyuVKmUYxqCDmBEyQgNmccD6/X7+74WFXFt7+/77HR37b8dizb+hyNjU1PR3DofjlddbP12tVjmAsLgk6iAamExZlj0diYTneJ6/+fTp6L88Xz/ucjlfh0LBFRTJJJPj33i9np9cLle5WhU+BJHpkSPxpmQyfWjfvtZf7XZ7amws1Qc+PsLXsWdP7CEuhFKpiS8bGxu+t1rNsijWtHGoDkKpoihsufy2JxgM3API60ql4p+ZmT2sqmpzLrdk6uo6/tXq6vpZ/Is2N0eHOI5TarUdEI3QGuvxeJJY+DiOngAYEUVxGvtVVOJ43mvHmnR1JXolSfpsaGj4NPJUm80mKoqqKcHR7u4EAaKSTE58i4Mpp9PxyGKx1IO8nM/HDwQCfpJOT8YLhc0oFKuMj7+4Cp7G3O66NRCr0oaGEIlEGidRIZVOvxh0Op11x44d7g+HQ6O7drnI8PDIJxjlBiS9K8vyp06nvZLJzF5yOOzZQMA3R6GAAT4gTU2NWSTdmZiY+mJ5OX/GZrP+ODPzKjE/n+tjWWYQilxwu91f9/Z+3F+rSS/R1Q8YI8+cOnVCk8WEEFBRwWXy5Mk/l7E/h3iOMR7k86vnMcp1EDpUKBRYSKrMzWVjUO9nGo1GiO4sExynuN27CZJH1tY2Jj0et7C0tNwNYw3E4+1/bW0VWahjAtESztahTpzV/a1FFdKYNje3GBDJdXYefby4uNQZCgVMbW17/9je3jZCpZ08kGl882ae4M1QDaCm+1rzehXONBWLJdlqtZCDBzsuLiwsxtDF52azRTQYDAoUopBYBDCB8Zh3HYg6iLYW0IkZ5qItLdGt1taWayMjz24Vi8WwqioSOJIsFjPZ2CgQdKRy7z1NQe9C1dcU48h4pX8KgtAHE/2O0R6jO0M2W8eVSiUj1Av/L8AAAMSSpIFopfUAAAAASUVORK5CYII='), auto;\n}\n\n#canvas.move{\n\tcursor: move\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC9zdHlsZXMvYXBwL3N0eWxlcy9zY3JpYmVDYW52YXMuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0NBQ0MsaUJBQWlCO0NBQ2pCLGtCQUFrQjtDQUNsQixpQkFBaUI7Q0FDakIsc0JBQXNCO0NBQ3RCLG9CQUFhO0tBQWIscUJBQWE7U0FBYixhQUFhO0NBQ2Isc0JBQXNCO0NBQ3RCLG1CQUFtQjtDQUNuQjs7QUFFRDtDQUNDLG1CQUFtQjtDQUNuQixNQUFNO0NBQ04sa0JBQWtCO0NBQ2xCOztBQUVEO0NBQ0MsbUJBQW1CO0NBQ25COztBQUVEO0NBQ0MsZ3pEQUFnekQ7Q0FDaHpEOztBQUVEO0NBQ0MsbzNFQUFvM0U7Q0FDcDNFOztBQUVEO0NBQ0MsWUFBWTtDQUNaIiwiZmlsZSI6InRvLmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jYW52YXN3cmFwe1xuXHRvdmVyZmxvdzogaGlkZGVuO1xuXHRtYXJnaW4tbGVmdDogMTVweDtcblx0bWFyZ2luLXRvcDogMzBweDtcblx0ZGlzcGxheTogaW5saW5lLWJsb2NrO1xuXHRmbGV4LWdyb3c6IDE7XG5cdGJvcmRlcjoycHggc29saWQgI2VlZTtcblx0cG9zaXRpb246IHJlbGF0aXZlO1xufVxuXG5jYW52YXN7XG5cdHBvc2l0aW9uOiBhYnNvbHV0ZTtcblx0dG9wOjA7XG5cdGN1cnNvcjogY3Jvc3NoYWlyO1xufVxuXG4jY2FudmFzLnVuYWJsZXtcblx0Y3Vyc29yOm5vdC1hbGxvd2VkO1xufVxuXG4jY2FudmFzLnJlbW92ZXtcblx0Y3Vyc29yOiB1cmwoJ2RhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBQkFBQUFBU0NBWUFBQUJTTzE1cUFBQUFHWFJGV0hSVGIyWjBkMkZ5WlFCQlpHOWlaU0JKYldGblpWSmxZV1I1Y2NsbFBBQUFBeVJwVkZoMFdFMU1PbU52YlM1aFpHOWlaUzU0YlhBQUFBQUFBRHcvZUhCaFkydGxkQ0JpWldkcGJqMGk3N3UvSWlCcFpEMGlWelZOTUUxd1EyVm9hVWg2Y21WVGVrNVVZM3ByWXpsa0lqOCtJRHg0T25odGNHMWxkR0VnZUcxc2JuTTZlRDBpWVdSdlltVTZibk02YldWMFlTOGlJSGc2ZUcxd2RHczlJa0ZrYjJKbElGaE5VQ0JEYjNKbElEVXVNeTFqTURFeElEWTJMakUwTlRZMk1Td2dNakF4TWk4d01pOHdOaTB4TkRvMU5qb3lOeUFnSUNBZ0lDQWdJajRnUEhKa1pqcFNSRVlnZUcxc2JuTTZjbVJtUFNKb2RIUndPaTh2ZDNkM0xuY3pMbTl5Wnk4eE9UazVMekF5THpJeUxYSmtaaTF6ZVc1MFlYZ3Ribk1qSWo0Z1BISmtaanBFWlhOamNtbHdkR2x2YmlCeVpHWTZZV0p2ZFhROUlpSWdlRzFzYm5NNmVHMXdQU0pvZEhSd09pOHZibk11WVdSdlltVXVZMjl0TDNoaGNDOHhMakF2SWlCNGJXeHVjenA0YlhCTlRUMGlhSFIwY0RvdkwyNXpMbUZrYjJKbExtTnZiUzk0WVhBdk1TNHdMMjF0THlJZ2VHMXNibk02YzNSU1pXWTlJbWgwZEhBNkx5OXVjeTVoWkc5aVpTNWpiMjB2ZUdGd0x6RXVNQzl6Vkhsd1pTOVNaWE52ZFhKalpWSmxaaU1pSUhodGNEcERjbVZoZEc5eVZHOXZiRDBpUVdSdlltVWdVR2h2ZEc5emFHOXdJRU5UTmlBb1RXRmphVzUwYjNOb0tTSWdlRzF3VFUwNlNXNXpkR0Z1WTJWSlJEMGllRzF3TG1scFpEb3hRalJGUVRnM01EZ3dRME14TVVVMk9FUkRSVU5EUWpjd1F6UkZPRU15UkNJZ2VHMXdUVTA2Ukc5amRXMWxiblJKUkQwaWVHMXdMbVJwWkRveFFqUkZRVGczTVRnd1EwTXhNVVUyT0VSRFJVTkRRamN3UXpSRk9FTXlSQ0krSUR4NGJYQk5UVHBFWlhKcGRtVmtSbkp2YlNCemRGSmxaanBwYm5OMFlXNWpaVWxFUFNKNGJYQXVhV2xrT2pGQ05FVkJPRFpGT0RCRFF6RXhSVFk0UkVORlEwTkNOekJETkVVNFF6SkVJaUJ6ZEZKbFpqcGtiMk4xYldWdWRFbEVQU0o0YlhBdVpHbGtPakZDTkVWQk9EWkdPREJEUXpFeFJUWTRSRU5GUTBOQ056QkRORVU0UXpKRUlpOCtJRHd2Y21SbU9rUmxjMk55YVhCMGFXOXVQaUE4TDNKa1pqcFNSRVkrSUR3dmVEcDRiWEJ0WlhSaFBpQThQM2h3WVdOclpYUWdaVzVrUFNKeUlqOCt6Y3BaT2dBQUFiUkpSRUZVZU5wODAxOG9uWEVjeC9HRGN6RVdpb3cxTlZvbzhxK3B0VTVidUhBanN5bi9Rcm1aVW5TSWJTbWI0OC9GUkhLeEMyd1g1b2FvQ1lYY1NHVGx4ZzBYam91VkN6RXVYRmhDbXZldlBxZWVucDV6bm5yVjg1enplNzdQOS92OWZYOWhQcC9QNVhBOWxMOTZmb2xJck9PL2RXRzR5L2xLUlpydVk1Q2pJSW4yaFc2SGw4dndRMThjUnI0Q1BrRVRXckVZS29NNFBFSTBldkVXeThqR0NpYVJFU3BBRlA2Z0R4djZ6WXRtL01RdE1vTUZTTkhpYWZUcjNnUzZ4aGVzSXNKYXVqMkFxZThDYzVqRkEvU2dSbVdZc3VJeGdBWjdnT2VveERoSzhGZ0JadkFicFdqRVB0SXhpaVJyZ0E0YzRCRDFhRWVSR3ZvTUkxaFRzQ3Y0VFNtQldvcFJqanBVYUdET1VJMzNxRldHWmg2eTBLM01qazJBQkRWcUhyRjRqVGY0cXEvZDZMbEZKZjdEQkM0RGc1UUxEOXJ3VlB0Y3FFRHZsSUZwNEoxNjR3MjhIR2lpWDUwM05XL2hHMTVvMnBLUnAvMy9oQjBzMlVmNVNCMDJpemFWM25mc3FYRUx5ckpBR1RpZWhXMDF5QXpQUjUySExueldPVEQ5bWNLdVBZQjFHODNXZE9JVlRqWEdneGpULzBOT3g5YnBMSmhacU5JV2VqUjlIM0RpRk1EdENuNzkwdUNZYVR3UHR1aGVnQUVBMnVoYU1ZT2grK29BQUFBQVNVVk9SSzVDWUlJPScpLCBhdXRvO1xufVxuXG4jY2FudmFzLmN0cmxsaW5le1xuXHRjdXJzb3I6IHVybCgnZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFCQUFBQUFRQ0FZQUFBQWY4LzloQUFBQUdYUkZXSFJUYjJaMGQyRnlaUUJCWkc5aVpTQkpiV0ZuWlZKbFlXUjVjY2xsUEFBQUF5UnBWRmgwV0UxTU9tTnZiUzVoWkc5aVpTNTRiWEFBQUFBQUFEdy9lSEJoWTJ0bGRDQmlaV2RwYmowaTc3dS9JaUJwWkQwaVZ6Vk5NRTF3UTJWb2FVaDZjbVZUZWs1VVkzcHJZemxrSWo4K0lEeDRPbmh0Y0cxbGRHRWdlRzFzYm5NNmVEMGlZV1J2WW1VNmJuTTZiV1YwWVM4aUlIZzZlRzF3ZEdzOUlrRmtiMkpsSUZoTlVDQkRiM0psSURVdU15MWpNREV4SURZMkxqRTBOVFkyTVN3Z01qQXhNaTh3TWk4d05pMHhORG8xTmpveU55QWdJQ0FnSUNBZ0lqNGdQSEprWmpwU1JFWWdlRzFzYm5NNmNtUm1QU0pvZEhSd09pOHZkM2QzTG5jekxtOXlaeTh4T1RrNUx6QXlMekl5TFhKa1ppMXplVzUwWVhndGJuTWpJajRnUEhKa1pqcEVaWE5qY21sd2RHbHZiaUJ5WkdZNllXSnZkWFE5SWlJZ2VHMXNibk02ZUcxd1BTSm9kSFJ3T2k4dmJuTXVZV1J2WW1VdVkyOXRMM2hoY0M4eExqQXZJaUI0Yld4dWN6cDRiWEJOVFQwaWFIUjBjRG92TDI1ekxtRmtiMkpsTG1OdmJTOTRZWEF2TVM0d0wyMXRMeUlnZUcxc2JuTTZjM1JTWldZOUltaDBkSEE2THk5dWN5NWhaRzlpWlM1amIyMHZlR0Z3THpFdU1DOXpWSGx3WlM5U1pYTnZkWEpqWlZKbFppTWlJSGh0Y0RwRGNtVmhkRzl5Vkc5dmJEMGlRV1J2WW1VZ1VHaHZkRzl6YUc5d0lFTlROaUFvVFdGamFXNTBiM05vS1NJZ2VHMXdUVTA2U1c1emRHRnVZMlZKUkQwaWVHMXdMbWxwWkRvM1FrSXlSVEZHUkRnek9UY3hNVVUyUWpKRlFVSkJPRFU1TnpoRVFqUXhNaUlnZUcxd1RVMDZSRzlqZFcxbGJuUkpSRDBpZUcxd0xtUnBaRG8zUWtJeVJURkdSVGd6T1RjeE1VVTJRakpGUVVKQk9EVTVOemhFUWpReE1pSStJRHg0YlhCTlRUcEVaWEpwZG1Wa1JuSnZiU0J6ZEZKbFpqcHBibk4wWVc1alpVbEVQU0o0YlhBdWFXbGtPamRDUWpKRk1VWkNPRE01TnpFeFJUWkNNa1ZCUWtFNE5UazNPRVJDTkRFeUlpQnpkRkpsWmpwa2IyTjFiV1Z1ZEVsRVBTSjRiWEF1Wkdsa09qZENRakpGTVVaRE9ETTVOekV4UlRaQ01rVkJRa0U0TlRrM09FUkNOREV5SWk4K0lEd3ZjbVJtT2tSbGMyTnlhWEIwYVc5dVBpQThMM0prWmpwU1JFWStJRHd2ZURwNGJYQnRaWFJoUGlBOFAzaHdZV05yWlhRZ1pXNWtQU0p5SWo4K0YwQklzUUFBQTJkSlJFRlVlTnBjVTFsdkUxY1l2VE4zdkc4UU94NXZjUnczY1ZpU2dGa2RKYWxRb09XdDZqL2dBWUVFUEZTVmdBZGVJc0Y3cWhaVU5WSVE2b0xhaHo2VVRWWFZTa0VLVFNrSmRod1N4U0VFaXliTzRpeE9iQk43eHJQMFREUklpSWRQYysvYzc1N3YrODQ1bHlHRTVJMUd3MytTSlAvaTgzbTlScU54ZG4xOVl6U1JPRHBwdDl1a1Vxbk1JSWNpSkFTSFVCRHF1My9VYkRhZEZBU3g1OENCdG1mRllubDRaU1hmU3ludHlXUmVYZ0VZRFFiOXp5dVZLbVVZeHFDRG1CRXlRZ05tY2NENi9YNys3NFdGWEZ0NysvNzdIUjM3YjhkaXpiK2h5TmpVMVBSM0RvZmpsZGRiUDEydFZqbUFzTGdrNmlBYW1FeFpsajBkaVlUbmVKNi8rZlRwNkw4OFh6L3VjamxmaDBMQkZSVEpKSlBqMzNpOW5wOWNMbGU1V2hVK0JKSHBrU1B4cG1ReWZXamZ2dFpmN1haN2Ftd3MxUWMrUHNMWHNXZFA3Q0V1aEZLcGlTOGJHeHUrdDFyTnNpald0SEdvRGtLcG9paHN1ZnkySnhnTTNBUEk2MHFsNHArWm1UMnNxbXB6THJkazZ1bzYvdFhxNnZwWi9JczJOMGVIT0k1VGFyVWRFSTNRR3V2eGVKSlkrRGlPbmdBWUVVVnhHdnRWVk9KNDNtdkhtblIxSlhvbFNmcHNhR2o0TlBKVW04MG1Lb3FxS2NIUjd1NEVBYUtTVEU1OGk0TXBwOVB4eUdLeDFJTzhuTS9IRHdRQ2ZwSk9UOFlMaGMwb0ZLdU1qNys0Q3A3RzNPNjZOUkNyMG9hR0VJbEVHaWRSSVpWT3Z4aDBPcDExeDQ0ZDdnK0hRNk83ZHJuSThQRElKeGpsQmlTOUs4dnlwMDZudlpMSnpGNXlPT3paUU1BM1I2R0FBVDRnVFUyTldTVGRtWmlZK21KNU9YL0daclArT0RQektqRS9uK3RqV1dZUWlseHd1OTFmOS9aKzNGK3JTUy9SMVE4WUk4K2NPblZDazhXRUVGQlJ3V1h5NU1rL2w3RS9oM2lPTVI3azg2dm5NY3AxRURwVUtCUllTS3JNeldWalVPOW5HbzFHaU80c0V4eW51TjI3Q1pKSDF0WTJKajBldDdDMHROd05ZdzNFNCsxL2JXMFZXYWhqQXRFU3p0YWhUcHpWL2ExRkZkS1lOamUzR0JESmRYWWVmYnk0dU5RWkNnVk1iVzE3LzlqZTNqWkNwWjA4a0dsODgyYWU0TTFRRGFDbSsxcnplaFhPTkJXTEpkbHF0WkNEQnpzdUxpd3N4dERGNTJhelJUUVlEQW9Vb3BCWUJEQ0I4WmgzSFlnNmlMWVcwSWtaNXFJdExkR3QxdGFXYXlNanoyNFZpOFd3cWlvU09KSXNGalBaMkNnUWRLUnk3ejFOUWU5QzFkY1U0OGg0cFg4S2d0QUhFLzJPMFI2ak8wTTJXOGVWU2lVajFBdi9MOEFBQU1TU3BJRm9wZlVBQUFBQVNVVk9SSzVDWUlJPScpLCBhdXRvO1xufVxuXG4jY2FudmFzLm1vdmV7XG5cdGN1cnNvcjogbW92ZVxufSJdfQ== */") || true) && "_656d4019")
-var isLoad = false
 
-var stage = new createjs.Stage("canvas")
+class Component extends Nanocomponent {
+  constructor () {
+    super()
+  }
 
-var container = new createjs.Container()
+  createElement (state, emit) {
+    return html`
+      <div class="canvaswrap">
+        <canvas
+          width="1050"
+          height="1000"
+          id="canvas"
+          onmousedown=${onmousedown(state, emit)}
+          onmousemove=${onmousemove(state, emit)}
+          onmouseup=${onmouseup(state, emit)}>
+        </canvas>
+      </div>
+    `
+  }
 
-stage.addChild(container)
+  load (state, emit) {
+    window.stage = new createjs.Stage('canvas')
+    window.stage.enableMouseOver()
+    window.container = new createjs.Container()
+    window.stage.addChild(window.container)
+  }
 
-function unique(prefix, state, emit){
-  emit('increaseCountId')
-  var id = state.countId + '';
-  return prefix ? prefix + id : id;
+  update () {
+    return false
+  }
 }
 
-function onmousedown(state, emit){
-  return e=>{
-    setTimeout(()=>{
+function unique (prefix, state, emit) {
+  emit('increaseCountId')
+  var id = state.countId + ''
+  return prefix ? prefix + id : id
+}
 
+function onmousedown (state, emit) {
+  return e => {
+    setTimeout(() => {
       if (state.drawType !== 'line') return
 
-      if (state.isPreventEvent){
+      if (state.isPreventEvent) {
         e.preventDefault()
         emit('preventEvent', false)
         return
       }
 
-      var x = e.pageX - $(e.target).offset().left - state.container.x
-        , y = e.pageY - $(e.target).offset().top - state.container.y
-        , uid = unique('p_', state, emit)
+      var x = e.pageX - $(e.target).offset().left - state.container.x,
+        y = e.pageY - $(e.target).offset().top - state.container.y,
+        uid = unique('p_', state, emit)
 
       emit('addPoint', {x, y, uid})
       emit('mouseDown', true)
@@ -126,118 +161,105 @@ function onmousedown(state, emit){
   }
 }
 
-function onmousemove(state, emit){
-  return e=>{
+function onmousemove (state, emit) {
+  return e => {
     const {drawType, container, currentId, isMouseDown} = state
 
-    if (isMouseDown&&(drawType === 'line' || drawType === 'ctrlline')){
-      var x = e.pageX - $(e.target).offset().left - container.x
-        , y = e.pageY - $(e.target).offset().top - container.y
-        , isMirror = true
+    if (isMouseDown && (drawType === 'line' || drawType === 'ctrlline')) {
+      var x = e.pageX - $(e.target).offset().left - container.x,
+        y = e.pageY - $(e.target).offset().top - container.y,
+        isMirror = true
 
       emit('operateCtrl', {uid: currentId, x, y, isMirror})
     }
   }
 }
 
-function onmouseup(state, emit){
-  return e=>{
+function onmouseup (state, emit) {
+  return e => {
     emit('preventDrag', false)
     emit('mouseDown', false)
   }
 }
 
-function onload(state, emit){
-  window.stage = new createjs.Stage("canvas")
-  window.stage.enableMouseOver()
-  window.container = new createjs.Container()
-  window.stage.addChild(window.container)
-}
+module.exports = new Component()
 
-module.exports = (state, emit)=>{
-  return html`
-    <div class="canvaswrap">
-      <canvas
-        width="1050"
-        height="1000"
-        id="canvas"
-        onmousedown=${onmousedown(state, emit)}
-        onmousemove=${onmousemove(state, emit)}
-        onmouseup=${onmouseup(state, emit)}>
-        ${setTimeout(()=>{
-          if (!isLoad){
-            isLoad = true
-            onload(state, emit)
-          }
-        },0)}
-      </canvas>
-    </div>
-  `
-}
-
-},{"choo/html":15,"sheetify/insert":37,"yuki-createjs":45}],4:[function(require,module,exports){
+},{"choo/html":16,"nanocomponent":27,"sheetify/insert":44,"yuki-createjs":52}],4:[function(require,module,exports){
 var html = require('choo/html')
 var css = 0
-var buttons = require("../buttons.json").storeButtons
+var Nanocomponent = require('nanocomponent')
+var buttons = require('../buttons.json').storeButtons
 
 ;((require('sheetify/insert')("button{\n  cursor: pointer;\n}\n\n#save{\n\tfloat: right\n}\n\n#save:focus{\n\toutline:0 !important;\n}\n\n#fetch:focus{\n\toutline:0 !important;\n}\n\n.sk-three-bounce{\n  width: auto !important;\n  display: inline-block;\n  margin: 0 !important;\n  margin-left: 5px !important;\n}\n\n.sk-three-bounce .sk-child{\n  width: 10px !important;\n  margin-left: 3px !important;\n  height: 10px !important;\n}\n\n.btn-outline-primary .sk-child{\n  background-color: #0275d8 !important;\n}\n\n.btn-outline-warning .sk-child{\n  background-color: #f0ad4e !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC9zdHlsZXMvYXBwL3N0eWxlcy9zdG9yZUJ1dHRvbi5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxnQkFBZ0I7Q0FDakI7O0FBRUQ7Q0FDQyxZQUFZO0NBQ1o7O0FBRUQ7Q0FDQyxxQkFBcUI7Q0FDckI7O0FBRUQ7Q0FDQyxxQkFBcUI7Q0FDckI7O0FBRUQ7RUFDRSx1QkFBdUI7RUFDdkIsc0JBQXNCO0VBQ3RCLHFCQUFxQjtFQUNyQiw0QkFBNEI7Q0FDN0I7O0FBRUQ7RUFDRSx1QkFBdUI7RUFDdkIsNEJBQTRCO0VBQzVCLHdCQUF3QjtDQUN6Qjs7QUFFRDtFQUNFLHFDQUFxQztDQUN0Qzs7QUFFRDtFQUNFLHFDQUFxQztDQUN0QyIsImZpbGUiOiJ0by5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyJidXR0b257XG4gIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuI3NhdmV7XG5cdGZsb2F0OiByaWdodFxufVxuXG4jc2F2ZTpmb2N1c3tcblx0b3V0bGluZTowICFpbXBvcnRhbnQ7XG59XG5cbiNmZXRjaDpmb2N1c3tcblx0b3V0bGluZTowICFpbXBvcnRhbnQ7XG59XG5cbi5zay10aHJlZS1ib3VuY2V7XG4gIHdpZHRoOiBhdXRvICFpbXBvcnRhbnQ7XG4gIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgbWFyZ2luOiAwICFpbXBvcnRhbnQ7XG4gIG1hcmdpbi1sZWZ0OiA1cHggIWltcG9ydGFudDtcbn1cblxuLnNrLXRocmVlLWJvdW5jZSAuc2stY2hpbGR7XG4gIHdpZHRoOiAxMHB4ICFpbXBvcnRhbnQ7XG4gIG1hcmdpbi1sZWZ0OiAzcHggIWltcG9ydGFudDtcbiAgaGVpZ2h0OiAxMHB4ICFpbXBvcnRhbnQ7XG59XG5cbi5idG4tb3V0bGluZS1wcmltYXJ5IC5zay1jaGlsZHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzAyNzVkOCAhaW1wb3J0YW50O1xufVxuXG4uYnRuLW91dGxpbmUtd2FybmluZyAuc2stY2hpbGR7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmMGFkNGUgIWltcG9ydGFudDtcbn0iXX0= */") || true) && "_2ca7f3a9")
 ;((require('sheetify/insert')("/*\n *  Usage:\n *\n      <div class=\"sk-rotating-plane\"></div>\n *\n */\n.sk-rotating-plane {\n  width: 40px;\n  height: 40px;\n  background-color: #333;\n  margin: 40px auto;\n  -webkit-animation: sk-rotatePlane 1.2s infinite ease-in-out;\n          animation: sk-rotatePlane 1.2s infinite ease-in-out; }\n\n@-webkit-keyframes sk-rotatePlane {\n  0% {\n    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);\n            transform: perspective(120px) rotateX(0deg) rotateY(0deg); }\n  50% {\n    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);\n            transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }\n  100% {\n    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\n            transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); } }\n\n@keyframes sk-rotatePlane {\n  0% {\n    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);\n            transform: perspective(120px) rotateX(0deg) rotateY(0deg); }\n  50% {\n    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);\n            transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); }\n  100% {\n    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\n            transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-double-bounce\">\n        <div class=\"sk-child sk-double-bounce1\"></div>\n        <div class=\"sk-child sk-double-bounce2\"></div>\n      </div>\n *\n */\n.sk-double-bounce {\n  width: 40px;\n  height: 40px;\n  position: relative;\n  margin: 40px auto; }\n  .sk-double-bounce .sk-child {\n    width: 100%;\n    height: 100%;\n    border-radius: 50%;\n    background-color: #333;\n    opacity: 0.6;\n    position: absolute;\n    top: 0;\n    left: 0;\n    -webkit-animation: sk-doubleBounce 2s infinite ease-in-out;\n            animation: sk-doubleBounce 2s infinite ease-in-out; }\n  .sk-double-bounce .sk-double-bounce2 {\n    -webkit-animation-delay: -1.0s;\n            animation-delay: -1.0s; }\n\n@-webkit-keyframes sk-doubleBounce {\n  0%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  50% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n@keyframes sk-doubleBounce {\n  0%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  50% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-wave\">\n        <div class=\"sk-rect sk-rect1\"></div>\n        <div class=\"sk-rect sk-rect2\"></div>\n        <div class=\"sk-rect sk-rect3\"></div>\n        <div class=\"sk-rect sk-rect4\"></div>\n        <div class=\"sk-rect sk-rect5\"></div>\n      </div>\n *\n */\n.sk-wave {\n  margin: 40px auto;\n  width: 50px;\n  height: 40px;\n  text-align: center;\n  font-size: 10px; }\n  .sk-wave .sk-rect {\n    background-color: #333;\n    height: 100%;\n    width: 6px;\n    display: inline-block;\n    -webkit-animation: sk-waveStretchDelay 1.2s infinite ease-in-out;\n            animation: sk-waveStretchDelay 1.2s infinite ease-in-out; }\n  .sk-wave .sk-rect1 {\n    -webkit-animation-delay: -1.2s;\n            animation-delay: -1.2s; }\n  .sk-wave .sk-rect2 {\n    -webkit-animation-delay: -1.1s;\n            animation-delay: -1.1s; }\n  .sk-wave .sk-rect3 {\n    -webkit-animation-delay: -1s;\n            animation-delay: -1s; }\n  .sk-wave .sk-rect4 {\n    -webkit-animation-delay: -0.9s;\n            animation-delay: -0.9s; }\n  .sk-wave .sk-rect5 {\n    -webkit-animation-delay: -0.8s;\n            animation-delay: -0.8s; }\n\n@-webkit-keyframes sk-waveStretchDelay {\n  0%, 40%, 100% {\n    -webkit-transform: scaleY(0.4);\n            transform: scaleY(0.4); }\n  20% {\n    -webkit-transform: scaleY(1);\n            transform: scaleY(1); } }\n\n@keyframes sk-waveStretchDelay {\n  0%, 40%, 100% {\n    -webkit-transform: scaleY(0.4);\n            transform: scaleY(0.4); }\n  20% {\n    -webkit-transform: scaleY(1);\n            transform: scaleY(1); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-wandering-cubes\">\n        <div class=\"sk-cube sk-cube1\"></div>\n        <div class=\"sk-cube sk-cube2\"></div>\n      </div>\n *\n */\n.sk-wandering-cubes {\n  margin: 40px auto;\n  width: 40px;\n  height: 40px;\n  position: relative; }\n  .sk-wandering-cubes .sk-cube {\n    background-color: #333;\n    width: 10px;\n    height: 10px;\n    position: absolute;\n    top: 0;\n    left: 0;\n    -webkit-animation: sk-wanderingCube 1.8s ease-in-out -1.8s infinite both;\n            animation: sk-wanderingCube 1.8s ease-in-out -1.8s infinite both; }\n  .sk-wandering-cubes .sk-cube2 {\n    -webkit-animation-delay: -0.9s;\n            animation-delay: -0.9s; }\n\n@-webkit-keyframes sk-wanderingCube {\n  0% {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg); }\n  25% {\n    -webkit-transform: translateX(30px) rotate(-90deg) scale(0.5);\n            transform: translateX(30px) rotate(-90deg) scale(0.5); }\n  50% {\n    /* Hack to make FF rotate in the right direction */\n    -webkit-transform: translateX(30px) translateY(30px) rotate(-179deg);\n            transform: translateX(30px) translateY(30px) rotate(-179deg); }\n  50.1% {\n    -webkit-transform: translateX(30px) translateY(30px) rotate(-180deg);\n            transform: translateX(30px) translateY(30px) rotate(-180deg); }\n  75% {\n    -webkit-transform: translateX(0) translateY(30px) rotate(-270deg) scale(0.5);\n            transform: translateX(0) translateY(30px) rotate(-270deg) scale(0.5); }\n  100% {\n    -webkit-transform: rotate(-360deg);\n            transform: rotate(-360deg); } }\n\n@keyframes sk-wanderingCube {\n  0% {\n    -webkit-transform: rotate(0deg);\n            transform: rotate(0deg); }\n  25% {\n    -webkit-transform: translateX(30px) rotate(-90deg) scale(0.5);\n            transform: translateX(30px) rotate(-90deg) scale(0.5); }\n  50% {\n    /* Hack to make FF rotate in the right direction */\n    -webkit-transform: translateX(30px) translateY(30px) rotate(-179deg);\n            transform: translateX(30px) translateY(30px) rotate(-179deg); }\n  50.1% {\n    -webkit-transform: translateX(30px) translateY(30px) rotate(-180deg);\n            transform: translateX(30px) translateY(30px) rotate(-180deg); }\n  75% {\n    -webkit-transform: translateX(0) translateY(30px) rotate(-270deg) scale(0.5);\n            transform: translateX(0) translateY(30px) rotate(-270deg) scale(0.5); }\n  100% {\n    -webkit-transform: rotate(-360deg);\n            transform: rotate(-360deg); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-spinner sk-spinner-pulse\"></div>\n *\n */\n.sk-spinner-pulse {\n  width: 40px;\n  height: 40px;\n  margin: 40px auto;\n  background-color: #333;\n  border-radius: 100%;\n  -webkit-animation: sk-pulseScaleOut 1s infinite ease-in-out;\n          animation: sk-pulseScaleOut 1s infinite ease-in-out; }\n\n@-webkit-keyframes sk-pulseScaleOut {\n  0% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  100% {\n    -webkit-transform: scale(1);\n            transform: scale(1);\n    opacity: 0; } }\n\n@keyframes sk-pulseScaleOut {\n  0% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  100% {\n    -webkit-transform: scale(1);\n            transform: scale(1);\n    opacity: 0; } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-chasing-dots\">\n        <div class=\"sk-child sk-dot1\"></div>\n        <div class=\"sk-child sk-dot2\"></div>\n      </div>\n *\n */\n.sk-chasing-dots {\n  margin: 40px auto;\n  width: 40px;\n  height: 40px;\n  position: relative;\n  text-align: center;\n  -webkit-animation: sk-chasingDotsRotate 2s infinite linear;\n          animation: sk-chasingDotsRotate 2s infinite linear; }\n  .sk-chasing-dots .sk-child {\n    width: 60%;\n    height: 60%;\n    display: inline-block;\n    position: absolute;\n    top: 0;\n    background-color: #333;\n    border-radius: 100%;\n    -webkit-animation: sk-chasingDotsBounce 2s infinite ease-in-out;\n            animation: sk-chasingDotsBounce 2s infinite ease-in-out; }\n  .sk-chasing-dots .sk-dot2 {\n    top: auto;\n    bottom: 0;\n    -webkit-animation-delay: -1s;\n            animation-delay: -1s; }\n\n@-webkit-keyframes sk-chasingDotsRotate {\n  100% {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg); } }\n\n@keyframes sk-chasingDotsRotate {\n  100% {\n    -webkit-transform: rotate(360deg);\n            transform: rotate(360deg); } }\n\n@-webkit-keyframes sk-chasingDotsBounce {\n  0%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  50% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n@keyframes sk-chasingDotsBounce {\n  0%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  50% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-three-bounce\">\n        <div class=\"sk-child sk-bounce1\"></div>\n        <div class=\"sk-child sk-bounce2\"></div>\n        <div class=\"sk-child sk-bounce3\"></div>\n      </div>\n *\n */\n.sk-three-bounce {\n  margin: 40px auto;\n  width: 80px;\n  text-align: center; }\n  .sk-three-bounce .sk-child {\n    width: 20px;\n    height: 20px;\n    background-color: #333;\n    border-radius: 100%;\n    display: inline-block;\n    -webkit-animation: sk-three-bounce 1.4s ease-in-out 0s infinite both;\n            animation: sk-three-bounce 1.4s ease-in-out 0s infinite both; }\n  .sk-three-bounce .sk-bounce1 {\n    -webkit-animation-delay: -0.32s;\n            animation-delay: -0.32s; }\n  .sk-three-bounce .sk-bounce2 {\n    -webkit-animation-delay: -0.16s;\n            animation-delay: -0.16s; }\n\n@-webkit-keyframes sk-three-bounce {\n  0%, 80%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  40% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n@keyframes sk-three-bounce {\n  0%, 80%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  40% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-circle\">\n        <div class=\"sk-circle1 sk-child\"></div>\n        <div class=\"sk-circle2 sk-child\"></div>\n        <div class=\"sk-circle3 sk-child\"></div>\n        <div class=\"sk-circle4 sk-child\"></div>\n        <div class=\"sk-circle5 sk-child\"></div>\n        <div class=\"sk-circle6 sk-child\"></div>\n        <div class=\"sk-circle7 sk-child\"></div>\n        <div class=\"sk-circle8 sk-child\"></div>\n        <div class=\"sk-circle9 sk-child\"></div>\n        <div class=\"sk-circle10 sk-child\"></div>\n        <div class=\"sk-circle11 sk-child\"></div>\n        <div class=\"sk-circle12 sk-child\"></div>\n      </div>\n *\n */\n.sk-circle {\n  margin: 40px auto;\n  width: 40px;\n  height: 40px;\n  position: relative; }\n  .sk-circle .sk-child {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    left: 0;\n    top: 0; }\n  .sk-circle .sk-child:before {\n    content: '';\n    display: block;\n    margin: 0 auto;\n    width: 15%;\n    height: 15%;\n    background-color: #333;\n    border-radius: 100%;\n    -webkit-animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;\n            animation: sk-circleBounceDelay 1.2s infinite ease-in-out both; }\n  .sk-circle .sk-circle2 {\n    -webkit-transform: rotate(30deg);\n            transform: rotate(30deg); }\n  .sk-circle .sk-circle3 {\n    -webkit-transform: rotate(60deg);\n            transform: rotate(60deg); }\n  .sk-circle .sk-circle4 {\n    -webkit-transform: rotate(90deg);\n            transform: rotate(90deg); }\n  .sk-circle .sk-circle5 {\n    -webkit-transform: rotate(120deg);\n            transform: rotate(120deg); }\n  .sk-circle .sk-circle6 {\n    -webkit-transform: rotate(150deg);\n            transform: rotate(150deg); }\n  .sk-circle .sk-circle7 {\n    -webkit-transform: rotate(180deg);\n            transform: rotate(180deg); }\n  .sk-circle .sk-circle8 {\n    -webkit-transform: rotate(210deg);\n            transform: rotate(210deg); }\n  .sk-circle .sk-circle9 {\n    -webkit-transform: rotate(240deg);\n            transform: rotate(240deg); }\n  .sk-circle .sk-circle10 {\n    -webkit-transform: rotate(270deg);\n            transform: rotate(270deg); }\n  .sk-circle .sk-circle11 {\n    -webkit-transform: rotate(300deg);\n            transform: rotate(300deg); }\n  .sk-circle .sk-circle12 {\n    -webkit-transform: rotate(330deg);\n            transform: rotate(330deg); }\n  .sk-circle .sk-circle2:before {\n    -webkit-animation-delay: -1.1s;\n            animation-delay: -1.1s; }\n  .sk-circle .sk-circle3:before {\n    -webkit-animation-delay: -1s;\n            animation-delay: -1s; }\n  .sk-circle .sk-circle4:before {\n    -webkit-animation-delay: -0.9s;\n            animation-delay: -0.9s; }\n  .sk-circle .sk-circle5:before {\n    -webkit-animation-delay: -0.8s;\n            animation-delay: -0.8s; }\n  .sk-circle .sk-circle6:before {\n    -webkit-animation-delay: -0.7s;\n            animation-delay: -0.7s; }\n  .sk-circle .sk-circle7:before {\n    -webkit-animation-delay: -0.6s;\n            animation-delay: -0.6s; }\n  .sk-circle .sk-circle8:before {\n    -webkit-animation-delay: -0.5s;\n            animation-delay: -0.5s; }\n  .sk-circle .sk-circle9:before {\n    -webkit-animation-delay: -0.4s;\n            animation-delay: -0.4s; }\n  .sk-circle .sk-circle10:before {\n    -webkit-animation-delay: -0.3s;\n            animation-delay: -0.3s; }\n  .sk-circle .sk-circle11:before {\n    -webkit-animation-delay: -0.2s;\n            animation-delay: -0.2s; }\n  .sk-circle .sk-circle12:before {\n    -webkit-animation-delay: -0.1s;\n            animation-delay: -0.1s; }\n\n@-webkit-keyframes sk-circleBounceDelay {\n  0%, 80%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  40% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n@keyframes sk-circleBounceDelay {\n  0%, 80%, 100% {\n    -webkit-transform: scale(0);\n            transform: scale(0); }\n  40% {\n    -webkit-transform: scale(1);\n            transform: scale(1); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-cube-grid\">\n        <div class=\"sk-cube sk-cube1\"></div>\n        <div class=\"sk-cube sk-cube2\"></div>\n        <div class=\"sk-cube sk-cube3\"></div>\n        <div class=\"sk-cube sk-cube4\"></div>\n        <div class=\"sk-cube sk-cube5\"></div>\n        <div class=\"sk-cube sk-cube6\"></div>\n        <div class=\"sk-cube sk-cube7\"></div>\n        <div class=\"sk-cube sk-cube8\"></div>\n        <div class=\"sk-cube sk-cube9\"></div>\n      </div>\n *\n */\n.sk-cube-grid {\n  width: 40px;\n  height: 40px;\n  margin: 40px auto;\n  /*\n   * Spinner positions\n   * 1 2 3\n   * 4 5 6\n   * 7 8 9\n   */ }\n  .sk-cube-grid .sk-cube {\n    width: 33.33%;\n    height: 33.33%;\n    background-color: #333;\n    float: left;\n    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;\n            animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; }\n  .sk-cube-grid .sk-cube1 {\n    -webkit-animation-delay: 0.2s;\n            animation-delay: 0.2s; }\n  .sk-cube-grid .sk-cube2 {\n    -webkit-animation-delay: 0.3s;\n            animation-delay: 0.3s; }\n  .sk-cube-grid .sk-cube3 {\n    -webkit-animation-delay: 0.4s;\n            animation-delay: 0.4s; }\n  .sk-cube-grid .sk-cube4 {\n    -webkit-animation-delay: 0.1s;\n            animation-delay: 0.1s; }\n  .sk-cube-grid .sk-cube5 {\n    -webkit-animation-delay: 0.2s;\n            animation-delay: 0.2s; }\n  .sk-cube-grid .sk-cube6 {\n    -webkit-animation-delay: 0.3s;\n            animation-delay: 0.3s; }\n  .sk-cube-grid .sk-cube7 {\n    -webkit-animation-delay: 0.0s;\n            animation-delay: 0.0s; }\n  .sk-cube-grid .sk-cube8 {\n    -webkit-animation-delay: 0.1s;\n            animation-delay: 0.1s; }\n  .sk-cube-grid .sk-cube9 {\n    -webkit-animation-delay: 0.2s;\n            animation-delay: 0.2s; }\n\n@-webkit-keyframes sk-cubeGridScaleDelay {\n  0%, 70%, 100% {\n    -webkit-transform: scale3D(1, 1, 1);\n            transform: scale3D(1, 1, 1); }\n  35% {\n    -webkit-transform: scale3D(0, 0, 1);\n            transform: scale3D(0, 0, 1); } }\n\n@keyframes sk-cubeGridScaleDelay {\n  0%, 70%, 100% {\n    -webkit-transform: scale3D(1, 1, 1);\n            transform: scale3D(1, 1, 1); }\n  35% {\n    -webkit-transform: scale3D(0, 0, 1);\n            transform: scale3D(0, 0, 1); } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-fading-circle\">\n        <div class=\"sk-circle1 sk-circle\"></div>\n        <div class=\"sk-circle2 sk-circle\"></div>\n        <div class=\"sk-circle3 sk-circle\"></div>\n        <div class=\"sk-circle4 sk-circle\"></div>\n        <div class=\"sk-circle5 sk-circle\"></div>\n        <div class=\"sk-circle6 sk-circle\"></div>\n        <div class=\"sk-circle7 sk-circle\"></div>\n        <div class=\"sk-circle8 sk-circle\"></div>\n        <div class=\"sk-circle9 sk-circle\"></div>\n        <div class=\"sk-circle10 sk-circle\"></div>\n        <div class=\"sk-circle11 sk-circle\"></div>\n        <div class=\"sk-circle12 sk-circle\"></div>\n      </div>\n *\n */\n.sk-fading-circle {\n  margin: 40px auto;\n  width: 40px;\n  height: 40px;\n  position: relative; }\n  .sk-fading-circle .sk-circle {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    left: 0;\n    top: 0; }\n  .sk-fading-circle .sk-circle:before {\n    content: '';\n    display: block;\n    margin: 0 auto;\n    width: 15%;\n    height: 15%;\n    background-color: #333;\n    border-radius: 100%;\n    -webkit-animation: sk-circleFadeDelay 1.2s infinite ease-in-out both;\n            animation: sk-circleFadeDelay 1.2s infinite ease-in-out both; }\n  .sk-fading-circle .sk-circle2 {\n    -webkit-transform: rotate(30deg);\n            transform: rotate(30deg); }\n  .sk-fading-circle .sk-circle3 {\n    -webkit-transform: rotate(60deg);\n            transform: rotate(60deg); }\n  .sk-fading-circle .sk-circle4 {\n    -webkit-transform: rotate(90deg);\n            transform: rotate(90deg); }\n  .sk-fading-circle .sk-circle5 {\n    -webkit-transform: rotate(120deg);\n            transform: rotate(120deg); }\n  .sk-fading-circle .sk-circle6 {\n    -webkit-transform: rotate(150deg);\n            transform: rotate(150deg); }\n  .sk-fading-circle .sk-circle7 {\n    -webkit-transform: rotate(180deg);\n            transform: rotate(180deg); }\n  .sk-fading-circle .sk-circle8 {\n    -webkit-transform: rotate(210deg);\n            transform: rotate(210deg); }\n  .sk-fading-circle .sk-circle9 {\n    -webkit-transform: rotate(240deg);\n            transform: rotate(240deg); }\n  .sk-fading-circle .sk-circle10 {\n    -webkit-transform: rotate(270deg);\n            transform: rotate(270deg); }\n  .sk-fading-circle .sk-circle11 {\n    -webkit-transform: rotate(300deg);\n            transform: rotate(300deg); }\n  .sk-fading-circle .sk-circle12 {\n    -webkit-transform: rotate(330deg);\n            transform: rotate(330deg); }\n  .sk-fading-circle .sk-circle2:before {\n    -webkit-animation-delay: -1.1s;\n            animation-delay: -1.1s; }\n  .sk-fading-circle .sk-circle3:before {\n    -webkit-animation-delay: -1s;\n            animation-delay: -1s; }\n  .sk-fading-circle .sk-circle4:before {\n    -webkit-animation-delay: -0.9s;\n            animation-delay: -0.9s; }\n  .sk-fading-circle .sk-circle5:before {\n    -webkit-animation-delay: -0.8s;\n            animation-delay: -0.8s; }\n  .sk-fading-circle .sk-circle6:before {\n    -webkit-animation-delay: -0.7s;\n            animation-delay: -0.7s; }\n  .sk-fading-circle .sk-circle7:before {\n    -webkit-animation-delay: -0.6s;\n            animation-delay: -0.6s; }\n  .sk-fading-circle .sk-circle8:before {\n    -webkit-animation-delay: -0.5s;\n            animation-delay: -0.5s; }\n  .sk-fading-circle .sk-circle9:before {\n    -webkit-animation-delay: -0.4s;\n            animation-delay: -0.4s; }\n  .sk-fading-circle .sk-circle10:before {\n    -webkit-animation-delay: -0.3s;\n            animation-delay: -0.3s; }\n  .sk-fading-circle .sk-circle11:before {\n    -webkit-animation-delay: -0.2s;\n            animation-delay: -0.2s; }\n  .sk-fading-circle .sk-circle12:before {\n    -webkit-animation-delay: -0.1s;\n            animation-delay: -0.1s; }\n\n@-webkit-keyframes sk-circleFadeDelay {\n  0%, 39%, 100% {\n    opacity: 0; }\n  40% {\n    opacity: 1; } }\n\n@keyframes sk-circleFadeDelay {\n  0%, 39%, 100% {\n    opacity: 0; }\n  40% {\n    opacity: 1; } }\n\n/*\n *  Usage:\n *\n      <div class=\"sk-folding-cube\">\n        <div class=\"sk-cube1 sk-cube\"></div>\n        <div class=\"sk-cube2 sk-cube\"></div>\n        <div class=\"sk-cube4 sk-cube\"></div>\n        <div class=\"sk-cube3 sk-cube\"></div>\n      </div>\n *\n */\n.sk-folding-cube {\n  margin: 40px auto;\n  width: 40px;\n  height: 40px;\n  position: relative;\n  -webkit-transform: rotateZ(45deg);\n          transform: rotateZ(45deg); }\n  .sk-folding-cube .sk-cube {\n    float: left;\n    width: 50%;\n    height: 50%;\n    position: relative;\n    -webkit-transform: scale(1.1);\n            transform: scale(1.1); }\n  .sk-folding-cube .sk-cube:before {\n    content: '';\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    background-color: #333;\n    -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;\n            animation: sk-foldCubeAngle 2.4s infinite linear both;\n    -webkit-transform-origin: 100% 100%;\n            transform-origin: 100% 100%; }\n  .sk-folding-cube .sk-cube2 {\n    -webkit-transform: scale(1.1) rotateZ(90deg);\n            transform: scale(1.1) rotateZ(90deg); }\n  .sk-folding-cube .sk-cube3 {\n    -webkit-transform: scale(1.1) rotateZ(180deg);\n            transform: scale(1.1) rotateZ(180deg); }\n  .sk-folding-cube .sk-cube4 {\n    -webkit-transform: scale(1.1) rotateZ(270deg);\n            transform: scale(1.1) rotateZ(270deg); }\n  .sk-folding-cube .sk-cube2:before {\n    -webkit-animation-delay: 0.3s;\n            animation-delay: 0.3s; }\n  .sk-folding-cube .sk-cube3:before {\n    -webkit-animation-delay: 0.6s;\n            animation-delay: 0.6s; }\n  .sk-folding-cube .sk-cube4:before {\n    -webkit-animation-delay: 0.9s;\n            animation-delay: 0.9s; }\n\n@-webkit-keyframes sk-foldCubeAngle {\n  0%, 10% {\n    -webkit-transform: perspective(140px) rotateX(-180deg);\n            transform: perspective(140px) rotateX(-180deg);\n    opacity: 0; }\n  25%, 75% {\n    -webkit-transform: perspective(140px) rotateX(0deg);\n            transform: perspective(140px) rotateX(0deg);\n    opacity: 1; }\n  90%, 100% {\n    -webkit-transform: perspective(140px) rotateY(180deg);\n            transform: perspective(140px) rotateY(180deg);\n    opacity: 0; } }\n\n@keyframes sk-foldCubeAngle {\n  0%, 10% {\n    -webkit-transform: perspective(140px) rotateX(-180deg);\n            transform: perspective(140px) rotateX(-180deg);\n    opacity: 0; }\n  25%, 75% {\n    -webkit-transform: perspective(140px) rotateX(0deg);\n            transform: perspective(140px) rotateX(0deg);\n    opacity: 1; }\n  90%, 100% {\n    -webkit-transform: perspective(140px) rotateY(180deg);\n            transform: perspective(140px) rotateY(180deg);\n    opacity: 0; } }\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIm5vZGVfbW9kdWxlcy9zcGlua2l0L2Nzcy9ub2RlX21vZHVsZXMvc3BpbmtpdC9jc3Mvc3BpbmtpdC5jc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7O0dBS0c7QUFDSDtFQUNFLFlBQVk7RUFDWixhQUFhO0VBQ2IsdUJBQXVCO0VBQ3ZCLGtCQUFrQjtFQUNsQiw0REFBNEQ7VUFDcEQsb0RBQW9ELEVBQUU7O0FBRWhFO0VBQ0U7SUFDRSxrRUFBa0U7WUFDMUQsMERBQTBELEVBQUU7RUFDdEU7SUFDRSx1RUFBdUU7WUFDL0QsK0RBQStELEVBQUU7RUFDM0U7SUFDRSwwRUFBMEU7WUFDbEUsa0VBQWtFLEVBQUUsRUFBRTs7QUFFbEY7RUFDRTtJQUNFLGtFQUFrRTtZQUMxRCwwREFBMEQsRUFBRTtFQUN0RTtJQUNFLHVFQUF1RTtZQUMvRCwrREFBK0QsRUFBRTtFQUMzRTtJQUNFLDBFQUEwRTtZQUNsRSxrRUFBa0UsRUFBRSxFQUFFOztBQUVsRjs7Ozs7Ozs7R0FRRztBQUNIO0VBQ0UsWUFBWTtFQUNaLGFBQWE7RUFDYixtQkFBbUI7RUFDbkIsa0JBQWtCLEVBQUU7RUFDcEI7SUFDRSxZQUFZO0lBQ1osYUFBYTtJQUNiLG1CQUFtQjtJQUNuQix1QkFBdUI7SUFDdkIsYUFBYTtJQUNiLG1CQUFtQjtJQUNuQixPQUFPO0lBQ1AsUUFBUTtJQUNSLDJEQUEyRDtZQUNuRCxtREFBbUQsRUFBRTtFQUMvRDtJQUNFLCtCQUErQjtZQUN2Qix1QkFBdUIsRUFBRTs7QUFFckM7RUFDRTtJQUNFLDRCQUE0QjtZQUNwQixvQkFBb0IsRUFBRTtFQUNoQztJQUNFLDRCQUE0QjtZQUNwQixvQkFBb0IsRUFBRSxFQUFFOztBQUVwQztFQUNFO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFO0VBQ2hDO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFLEVBQUU7O0FBRXBDOzs7Ozs7Ozs7OztHQVdHO0FBQ0g7RUFDRSxrQkFBa0I7RUFDbEIsWUFBWTtFQUNaLGFBQWE7RUFDYixtQkFBbUI7RUFDbkIsZ0JBQWdCLEVBQUU7RUFDbEI7SUFDRSx1QkFBdUI7SUFDdkIsYUFBYTtJQUNiLFdBQVc7SUFDWCxzQkFBc0I7SUFDdEIsaUVBQWlFO1lBQ3pELHlEQUF5RCxFQUFFO0VBQ3JFO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsNkJBQTZCO1lBQ3JCLHFCQUFxQixFQUFFO0VBQ2pDO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFOztBQUVyQztFQUNFO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsNkJBQTZCO1lBQ3JCLHFCQUFxQixFQUFFLEVBQUU7O0FBRXJDO0VBQ0U7SUFDRSwrQkFBK0I7WUFDdkIsdUJBQXVCLEVBQUU7RUFDbkM7SUFDRSw2QkFBNkI7WUFDckIscUJBQXFCLEVBQUUsRUFBRTs7QUFFckM7Ozs7Ozs7O0dBUUc7QUFDSDtFQUNFLGtCQUFrQjtFQUNsQixZQUFZO0VBQ1osYUFBYTtFQUNiLG1CQUFtQixFQUFFO0VBQ3JCO0lBQ0UsdUJBQXVCO0lBQ3ZCLFlBQVk7SUFDWixhQUFhO0lBQ2IsbUJBQW1CO0lBQ25CLE9BQU87SUFDUCxRQUFRO0lBQ1IseUVBQXlFO1lBQ2pFLGlFQUFpRSxFQUFFO0VBQzdFO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFOztBQUVyQztFQUNFO0lBQ0UsZ0NBQWdDO1lBQ3hCLHdCQUF3QixFQUFFO0VBQ3BDO0lBQ0UsOERBQThEO1lBQ3RELHNEQUFzRCxFQUFFO0VBQ2xFO0lBQ0UsbURBQW1EO0lBQ25ELHFFQUFxRTtZQUM3RCw2REFBNkQsRUFBRTtFQUN6RTtJQUNFLHFFQUFxRTtZQUM3RCw2REFBNkQsRUFBRTtFQUN6RTtJQUNFLDZFQUE2RTtZQUNyRSxxRUFBcUUsRUFBRTtFQUNqRjtJQUNFLG1DQUFtQztZQUMzQiwyQkFBMkIsRUFBRSxFQUFFOztBQUUzQztFQUNFO0lBQ0UsZ0NBQWdDO1lBQ3hCLHdCQUF3QixFQUFFO0VBQ3BDO0lBQ0UsOERBQThEO1lBQ3RELHNEQUFzRCxFQUFFO0VBQ2xFO0lBQ0UsbURBQW1EO0lBQ25ELHFFQUFxRTtZQUM3RCw2REFBNkQsRUFBRTtFQUN6RTtJQUNFLHFFQUFxRTtZQUM3RCw2REFBNkQsRUFBRTtFQUN6RTtJQUNFLDZFQUE2RTtZQUNyRSxxRUFBcUUsRUFBRTtFQUNqRjtJQUNFLG1DQUFtQztZQUMzQiwyQkFBMkIsRUFBRSxFQUFFOztBQUUzQzs7Ozs7R0FLRztBQUNIO0VBQ0UsWUFBWTtFQUNaLGFBQWE7RUFDYixrQkFBa0I7RUFDbEIsdUJBQXVCO0VBQ3ZCLG9CQUFvQjtFQUNwQiw0REFBNEQ7VUFDcEQsb0RBQW9ELEVBQUU7O0FBRWhFO0VBQ0U7SUFDRSw0QkFBNEI7WUFDcEIsb0JBQW9CLEVBQUU7RUFDaEM7SUFDRSw0QkFBNEI7WUFDcEIsb0JBQW9CO0lBQzVCLFdBQVcsRUFBRSxFQUFFOztBQUVuQjtFQUNFO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFO0VBQ2hDO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQjtJQUM1QixXQUFXLEVBQUUsRUFBRTs7QUFFbkI7Ozs7Ozs7O0dBUUc7QUFDSDtFQUNFLGtCQUFrQjtFQUNsQixZQUFZO0VBQ1osYUFBYTtFQUNiLG1CQUFtQjtFQUNuQixtQkFBbUI7RUFDbkIsMkRBQTJEO1VBQ25ELG1EQUFtRCxFQUFFO0VBQzdEO0lBQ0UsV0FBVztJQUNYLFlBQVk7SUFDWixzQkFBc0I7SUFDdEIsbUJBQW1CO0lBQ25CLE9BQU87SUFDUCx1QkFBdUI7SUFDdkIsb0JBQW9CO0lBQ3BCLGdFQUFnRTtZQUN4RCx3REFBd0QsRUFBRTtFQUNwRTtJQUNFLFVBQVU7SUFDVixVQUFVO0lBQ1YsNkJBQTZCO1lBQ3JCLHFCQUFxQixFQUFFOztBQUVuQztFQUNFO0lBQ0Usa0NBQWtDO1lBQzFCLDBCQUEwQixFQUFFLEVBQUU7O0FBRTFDO0VBQ0U7SUFDRSxrQ0FBa0M7WUFDMUIsMEJBQTBCLEVBQUUsRUFBRTs7QUFFMUM7RUFDRTtJQUNFLDRCQUE0QjtZQUNwQixvQkFBb0IsRUFBRTtFQUNoQztJQUNFLDRCQUE0QjtZQUNwQixvQkFBb0IsRUFBRSxFQUFFOztBQUVwQztFQUNFO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFO0VBQ2hDO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFLEVBQUU7O0FBRXBDOzs7Ozs7Ozs7R0FTRztBQUNIO0VBQ0Usa0JBQWtCO0VBQ2xCLFlBQVk7RUFDWixtQkFBbUIsRUFBRTtFQUNyQjtJQUNFLFlBQVk7SUFDWixhQUFhO0lBQ2IsdUJBQXVCO0lBQ3ZCLG9CQUFvQjtJQUNwQixzQkFBc0I7SUFDdEIscUVBQXFFO1lBQzdELDZEQUE2RCxFQUFFO0VBQ3pFO0lBQ0UsZ0NBQWdDO1lBQ3hCLHdCQUF3QixFQUFFO0VBQ3BDO0lBQ0UsZ0NBQWdDO1lBQ3hCLHdCQUF3QixFQUFFOztBQUV0QztFQUNFO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFO0VBQ2hDO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFLEVBQUU7O0FBRXBDO0VBQ0U7SUFDRSw0QkFBNEI7WUFDcEIsb0JBQW9CLEVBQUU7RUFDaEM7SUFDRSw0QkFBNEI7WUFDcEIsb0JBQW9CLEVBQUUsRUFBRTs7QUFFcEM7Ozs7Ozs7Ozs7Ozs7Ozs7OztHQWtCRztBQUNIO0VBQ0Usa0JBQWtCO0VBQ2xCLFlBQVk7RUFDWixhQUFhO0VBQ2IsbUJBQW1CLEVBQUU7RUFDckI7SUFDRSxZQUFZO0lBQ1osYUFBYTtJQUNiLG1CQUFtQjtJQUNuQixRQUFRO0lBQ1IsT0FBTyxFQUFFO0VBQ1g7SUFDRSxZQUFZO0lBQ1osZUFBZTtJQUNmLGVBQWU7SUFDZixXQUFXO0lBQ1gsWUFBWTtJQUNaLHVCQUF1QjtJQUN2QixvQkFBb0I7SUFDcEIsdUVBQXVFO1lBQy9ELCtEQUErRCxFQUFFO0VBQzNFO0lBQ0UsaUNBQWlDO1lBRXpCLHlCQUF5QixFQUFFO0VBQ3JDO0lBQ0UsaUNBQWlDO1lBRXpCLHlCQUF5QixFQUFFO0VBQ3JDO0lBQ0UsaUNBQWlDO1lBRXpCLHlCQUF5QixFQUFFO0VBQ3JDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsNkJBQTZCO1lBQ3JCLHFCQUFxQixFQUFFO0VBQ2pDO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFOztBQUVyQztFQUNFO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFO0VBQ2hDO0lBQ0UsNEJBQTRCO1lBQ3BCLG9CQUFvQixFQUFFLEVBQUU7O0FBRXBDO0VBQ0U7SUFDRSw0QkFBNEI7WUFDcEIsb0JBQW9CLEVBQUU7RUFDaEM7SUFDRSw0QkFBNEI7WUFDcEIsb0JBQW9CLEVBQUUsRUFBRTs7QUFFcEM7Ozs7Ozs7Ozs7Ozs7OztHQWVHO0FBQ0g7RUFDRSxZQUFZO0VBQ1osYUFBYTtFQUNiLGtCQUFrQjtFQUNsQjs7Ozs7S0FLRyxFQUFFO0VBQ0w7SUFDRSxjQUFjO0lBQ2QsZUFBZTtJQUNmLHVCQUF1QjtJQUN2QixZQUFZO0lBQ1osbUVBQW1FO1lBQzNELDJEQUEyRCxFQUFFO0VBQ3ZFO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFOztBQUVwQztFQUNFO0lBQ0Usb0NBQW9DO1lBQzVCLDRCQUE0QixFQUFFO0VBQ3hDO0lBQ0Usb0NBQW9DO1lBQzVCLDRCQUE0QixFQUFFLEVBQUU7O0FBRTVDO0VBQ0U7SUFDRSxvQ0FBb0M7WUFDNUIsNEJBQTRCLEVBQUU7RUFDeEM7SUFDRSxvQ0FBb0M7WUFDNUIsNEJBQTRCLEVBQUUsRUFBRTs7QUFFNUM7Ozs7Ozs7Ozs7Ozs7Ozs7OztHQWtCRztBQUNIO0VBQ0Usa0JBQWtCO0VBQ2xCLFlBQVk7RUFDWixhQUFhO0VBQ2IsbUJBQW1CLEVBQUU7RUFDckI7SUFDRSxZQUFZO0lBQ1osYUFBYTtJQUNiLG1CQUFtQjtJQUNuQixRQUFRO0lBQ1IsT0FBTyxFQUFFO0VBQ1g7SUFDRSxZQUFZO0lBQ1osZUFBZTtJQUNmLGVBQWU7SUFDZixXQUFXO0lBQ1gsWUFBWTtJQUNaLHVCQUF1QjtJQUN2QixvQkFBb0I7SUFDcEIscUVBQXFFO1lBQzdELDZEQUE2RCxFQUFFO0VBQ3pFO0lBQ0UsaUNBQWlDO1lBRXpCLHlCQUF5QixFQUFFO0VBQ3JDO0lBQ0UsaUNBQWlDO1lBRXpCLHlCQUF5QixFQUFFO0VBQ3JDO0lBQ0UsaUNBQWlDO1lBRXpCLHlCQUF5QixFQUFFO0VBQ3JDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0Usa0NBQWtDO1lBRTFCLDBCQUEwQixFQUFFO0VBQ3RDO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsNkJBQTZCO1lBQ3JCLHFCQUFxQixFQUFFO0VBQ2pDO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFO0VBQ25DO0lBQ0UsK0JBQStCO1lBQ3ZCLHVCQUF1QixFQUFFOztBQUVyQztFQUNFO0lBQ0UsV0FBVyxFQUFFO0VBQ2Y7SUFDRSxXQUFXLEVBQUUsRUFBRTs7QUFFbkI7RUFDRTtJQUNFLFdBQVcsRUFBRTtFQUNmO0lBQ0UsV0FBVyxFQUFFLEVBQUU7O0FBRW5COzs7Ozs7Ozs7O0dBVUc7QUFDSDtFQUNFLGtCQUFrQjtFQUNsQixZQUFZO0VBQ1osYUFBYTtFQUNiLG1CQUFtQjtFQUNuQixrQ0FBa0M7VUFDMUIsMEJBQTBCLEVBQUU7RUFDcEM7SUFDRSxZQUFZO0lBQ1osV0FBVztJQUNYLFlBQVk7SUFDWixtQkFBbUI7SUFDbkIsOEJBQThCO1lBRXRCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsWUFBWTtJQUNaLG1CQUFtQjtJQUNuQixPQUFPO0lBQ1AsUUFBUTtJQUNSLFlBQVk7SUFDWixhQUFhO0lBQ2IsdUJBQXVCO0lBQ3ZCLDhEQUE4RDtZQUN0RCxzREFBc0Q7SUFDOUQsb0NBQW9DO1lBRTVCLDRCQUE0QixFQUFFO0VBQ3hDO0lBQ0UsNkNBQTZDO1lBQ3JDLHFDQUFxQyxFQUFFO0VBQ2pEO0lBQ0UsOENBQThDO1lBQ3RDLHNDQUFzQyxFQUFFO0VBQ2xEO0lBQ0UsOENBQThDO1lBQ3RDLHNDQUFzQyxFQUFFO0VBQ2xEO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFO0VBQ2xDO0lBQ0UsOEJBQThCO1lBQ3RCLHNCQUFzQixFQUFFOztBQUVwQztFQUNFO0lBQ0UsdURBQXVEO1lBQy9DLCtDQUErQztJQUN2RCxXQUFXLEVBQUU7RUFDZjtJQUNFLG9EQUFvRDtZQUM1Qyw0Q0FBNEM7SUFDcEQsV0FBVyxFQUFFO0VBQ2Y7SUFDRSxzREFBc0Q7WUFDOUMsOENBQThDO0lBQ3RELFdBQVcsRUFBRSxFQUFFOztBQUVuQjtFQUNFO0lBQ0UsdURBQXVEO1lBQy9DLCtDQUErQztJQUN2RCxXQUFXLEVBQUU7RUFDZjtJQUNFLG9EQUFvRDtZQUM1Qyw0Q0FBNEM7SUFDcEQsV0FBVyxFQUFFO0VBQ2Y7SUFDRSxzREFBc0Q7WUFDOUMsOENBQThDO0lBQ3RELFdBQVcsRUFBRSxFQUFFIiwiZmlsZSI6InRvLmNzcyIsInNvdXJjZXNDb250ZW50IjpbIi8qXG4gKiAgVXNhZ2U6XG4gKlxuICAgICAgPGRpdiBjbGFzcz1cInNrLXJvdGF0aW5nLXBsYW5lXCI+PC9kaXY+XG4gKlxuICovXG4uc2stcm90YXRpbmctcGxhbmUge1xuICB3aWR0aDogNDBweDtcbiAgaGVpZ2h0OiA0MHB4O1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMzMzO1xuICBtYXJnaW46IDQwcHggYXV0bztcbiAgLXdlYmtpdC1hbmltYXRpb246IHNrLXJvdGF0ZVBsYW5lIDEuMnMgaW5maW5pdGUgZWFzZS1pbi1vdXQ7XG4gICAgICAgICAgYW5pbWF0aW9uOiBzay1yb3RhdGVQbGFuZSAxLjJzIGluZmluaXRlIGVhc2UtaW4tb3V0OyB9XG5cbkAtd2Via2l0LWtleWZyYW1lcyBzay1yb3RhdGVQbGFuZSB7XG4gIDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTIwcHgpIHJvdGF0ZVgoMGRlZykgcm90YXRlWSgwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTIwcHgpIHJvdGF0ZVgoMGRlZykgcm90YXRlWSgwZGVnKTsgfVxuICA1MCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBwZXJzcGVjdGl2ZSgxMjBweCkgcm90YXRlWCgtMTgwLjFkZWcpIHJvdGF0ZVkoMGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHBlcnNwZWN0aXZlKDEyMHB4KSByb3RhdGVYKC0xODAuMWRlZykgcm90YXRlWSgwZGVnKTsgfVxuICAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTIwcHgpIHJvdGF0ZVgoLTE4MGRlZykgcm90YXRlWSgtMTc5LjlkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBwZXJzcGVjdGl2ZSgxMjBweCkgcm90YXRlWCgtMTgwZGVnKSByb3RhdGVZKC0xNzkuOWRlZyk7IH0gfVxuXG5Aa2V5ZnJhbWVzIHNrLXJvdGF0ZVBsYW5lIHtcbiAgMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBwZXJzcGVjdGl2ZSgxMjBweCkgcm90YXRlWCgwZGVnKSByb3RhdGVZKDBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBwZXJzcGVjdGl2ZSgxMjBweCkgcm90YXRlWCgwZGVnKSByb3RhdGVZKDBkZWcpOyB9XG4gIDUwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHBlcnNwZWN0aXZlKDEyMHB4KSByb3RhdGVYKC0xODAuMWRlZykgcm90YXRlWSgwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTIwcHgpIHJvdGF0ZVgoLTE4MC4xZGVnKSByb3RhdGVZKDBkZWcpOyB9XG4gIDEwMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBwZXJzcGVjdGl2ZSgxMjBweCkgcm90YXRlWCgtMTgwZGVnKSByb3RhdGVZKC0xNzkuOWRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHBlcnNwZWN0aXZlKDEyMHB4KSByb3RhdGVYKC0xODBkZWcpIHJvdGF0ZVkoLTE3OS45ZGVnKTsgfSB9XG5cbi8qXG4gKiAgVXNhZ2U6XG4gKlxuICAgICAgPGRpdiBjbGFzcz1cInNrLWRvdWJsZS1ib3VuY2VcIj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNoaWxkIHNrLWRvdWJsZS1ib3VuY2UxXCI+PC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJzay1jaGlsZCBzay1kb3VibGUtYm91bmNlMlwiPjwvZGl2PlxuICAgICAgPC9kaXY+XG4gKlxuICovXG4uc2stZG91YmxlLWJvdW5jZSB7XG4gIHdpZHRoOiA0MHB4O1xuICBoZWlnaHQ6IDQwcHg7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgbWFyZ2luOiA0MHB4IGF1dG87IH1cbiAgLnNrLWRvdWJsZS1ib3VuY2UgLnNrLWNoaWxkIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgYm9yZGVyLXJhZGl1czogNTAlO1xuICAgIGJhY2tncm91bmQtY29sb3I6ICMzMzM7XG4gICAgb3BhY2l0eTogMC42O1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICB0b3A6IDA7XG4gICAgbGVmdDogMDtcbiAgICAtd2Via2l0LWFuaW1hdGlvbjogc2stZG91YmxlQm91bmNlIDJzIGluZmluaXRlIGVhc2UtaW4tb3V0O1xuICAgICAgICAgICAgYW5pbWF0aW9uOiBzay1kb3VibGVCb3VuY2UgMnMgaW5maW5pdGUgZWFzZS1pbi1vdXQ7IH1cbiAgLnNrLWRvdWJsZS1ib3VuY2UgLnNrLWRvdWJsZS1ib3VuY2UyIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTEuMHM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IC0xLjBzOyB9XG5cbkAtd2Via2l0LWtleWZyYW1lcyBzay1kb3VibGVCb3VuY2Uge1xuICAwJSwgMTAwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDApO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgwKTsgfVxuICA1MCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUoMSk7IH0gfVxuXG5Aa2V5ZnJhbWVzIHNrLWRvdWJsZUJvdW5jZSB7XG4gIDAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDApOyB9XG4gIDUwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDEpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxKTsgfSB9XG5cbi8qXG4gKiAgVXNhZ2U6XG4gKlxuICAgICAgPGRpdiBjbGFzcz1cInNrLXdhdmVcIj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLXJlY3Qgc2stcmVjdDFcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLXJlY3Qgc2stcmVjdDJcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLXJlY3Qgc2stcmVjdDNcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLXJlY3Qgc2stcmVjdDRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLXJlY3Qgc2stcmVjdDVcIj48L2Rpdj5cbiAgICAgIDwvZGl2PlxuICpcbiAqL1xuLnNrLXdhdmUge1xuICBtYXJnaW46IDQwcHggYXV0bztcbiAgd2lkdGg6IDUwcHg7XG4gIGhlaWdodDogNDBweDtcbiAgdGV4dC1hbGlnbjogY2VudGVyO1xuICBmb250LXNpemU6IDEwcHg7IH1cbiAgLnNrLXdhdmUgLnNrLXJlY3Qge1xuICAgIGJhY2tncm91bmQtY29sb3I6ICMzMzM7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHdpZHRoOiA2cHg7XG4gICAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xuICAgIC13ZWJraXQtYW5pbWF0aW9uOiBzay13YXZlU3RyZXRjaERlbGF5IDEuMnMgaW5maW5pdGUgZWFzZS1pbi1vdXQ7XG4gICAgICAgICAgICBhbmltYXRpb246IHNrLXdhdmVTdHJldGNoRGVsYXkgMS4ycyBpbmZpbml0ZSBlYXNlLWluLW91dDsgfVxuICAuc2std2F2ZSAuc2stcmVjdDEge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMS4ycztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTEuMnM7IH1cbiAgLnNrLXdhdmUgLnNrLXJlY3QyIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTEuMXM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IC0xLjFzOyB9XG4gIC5zay13YXZlIC5zay1yZWN0MyB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0xcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTFzOyB9XG4gIC5zay13YXZlIC5zay1yZWN0NCB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjlzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC45czsgfVxuICAuc2std2F2ZSAuc2stcmVjdDUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMC44cztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTAuOHM7IH1cblxuQC13ZWJraXQta2V5ZnJhbWVzIHNrLXdhdmVTdHJldGNoRGVsYXkge1xuICAwJSwgNDAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGVZKDAuNCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlWSgwLjQpOyB9XG4gIDIwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlWSgxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGVZKDEpOyB9IH1cblxuQGtleWZyYW1lcyBzay13YXZlU3RyZXRjaERlbGF5IHtcbiAgMCUsIDQwJSwgMTAwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlWSgwLjQpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZVkoMC40KTsgfVxuICAyMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZVkoMSk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlWSgxKTsgfSB9XG5cbi8qXG4gKiAgVXNhZ2U6XG4gKlxuICAgICAgPGRpdiBjbGFzcz1cInNrLXdhbmRlcmluZy1jdWJlc1wiPlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlMVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlMlwiPjwvZGl2PlxuICAgICAgPC9kaXY+XG4gKlxuICovXG4uc2std2FuZGVyaW5nLWN1YmVzIHtcbiAgbWFyZ2luOiA0MHB4IGF1dG87XG4gIHdpZHRoOiA0MHB4O1xuICBoZWlnaHQ6IDQwcHg7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTsgfVxuICAuc2std2FuZGVyaW5nLWN1YmVzIC5zay1jdWJlIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjMzMzO1xuICAgIHdpZHRoOiAxMHB4O1xuICAgIGhlaWdodDogMTBweDtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgdG9wOiAwO1xuICAgIGxlZnQ6IDA7XG4gICAgLXdlYmtpdC1hbmltYXRpb246IHNrLXdhbmRlcmluZ0N1YmUgMS44cyBlYXNlLWluLW91dCAtMS44cyBpbmZpbml0ZSBib3RoO1xuICAgICAgICAgICAgYW5pbWF0aW9uOiBzay13YW5kZXJpbmdDdWJlIDEuOHMgZWFzZS1pbi1vdXQgLTEuOHMgaW5maW5pdGUgYm90aDsgfVxuICAuc2std2FuZGVyaW5nLWN1YmVzIC5zay1jdWJlMiB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjlzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC45czsgfVxuXG5ALXdlYmtpdC1rZXlmcmFtZXMgc2std2FuZGVyaW5nQ3ViZSB7XG4gIDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoMGRlZyk7IH1cbiAgMjUlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogdHJhbnNsYXRlWCgzMHB4KSByb3RhdGUoLTkwZGVnKSBzY2FsZSgwLjUpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVYKDMwcHgpIHJvdGF0ZSgtOTBkZWcpIHNjYWxlKDAuNSk7IH1cbiAgNTAlIHtcbiAgICAvKiBIYWNrIHRvIG1ha2UgRkYgcm90YXRlIGluIHRoZSByaWdodCBkaXJlY3Rpb24gKi9cbiAgICAtd2Via2l0LXRyYW5zZm9ybTogdHJhbnNsYXRlWCgzMHB4KSB0cmFuc2xhdGVZKDMwcHgpIHJvdGF0ZSgtMTc5ZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWCgzMHB4KSB0cmFuc2xhdGVZKDMwcHgpIHJvdGF0ZSgtMTc5ZGVnKTsgfVxuICA1MC4xJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHRyYW5zbGF0ZVgoMzBweCkgdHJhbnNsYXRlWSgzMHB4KSByb3RhdGUoLTE4MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVgoMzBweCkgdHJhbnNsYXRlWSgzMHB4KSByb3RhdGUoLTE4MGRlZyk7IH1cbiAgNzUlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogdHJhbnNsYXRlWCgwKSB0cmFuc2xhdGVZKDMwcHgpIHJvdGF0ZSgtMjcwZGVnKSBzY2FsZSgwLjUpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVYKDApIHRyYW5zbGF0ZVkoMzBweCkgcm90YXRlKC0yNzBkZWcpIHNjYWxlKDAuNSk7IH1cbiAgMTAwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgtMzYwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKC0zNjBkZWcpOyB9IH1cblxuQGtleWZyYW1lcyBzay13YW5kZXJpbmdDdWJlIHtcbiAgMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgwZGVnKTsgfVxuICAyNSUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiB0cmFuc2xhdGVYKDMwcHgpIHJvdGF0ZSgtOTBkZWcpIHNjYWxlKDAuNSk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVgoMzBweCkgcm90YXRlKC05MGRlZykgc2NhbGUoMC41KTsgfVxuICA1MCUge1xuICAgIC8qIEhhY2sgdG8gbWFrZSBGRiByb3RhdGUgaW4gdGhlIHJpZ2h0IGRpcmVjdGlvbiAqL1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiB0cmFuc2xhdGVYKDMwcHgpIHRyYW5zbGF0ZVkoMzBweCkgcm90YXRlKC0xNzlkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVYKDMwcHgpIHRyYW5zbGF0ZVkoMzBweCkgcm90YXRlKC0xNzlkZWcpOyB9XG4gIDUwLjElIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogdHJhbnNsYXRlWCgzMHB4KSB0cmFuc2xhdGVZKDMwcHgpIHJvdGF0ZSgtMTgwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogdHJhbnNsYXRlWCgzMHB4KSB0cmFuc2xhdGVZKDMwcHgpIHJvdGF0ZSgtMTgwZGVnKTsgfVxuICA3NSUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiB0cmFuc2xhdGVYKDApIHRyYW5zbGF0ZVkoMzBweCkgcm90YXRlKC0yNzBkZWcpIHNjYWxlKDAuNSk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHRyYW5zbGF0ZVgoMCkgdHJhbnNsYXRlWSgzMHB4KSByb3RhdGUoLTI3MGRlZykgc2NhbGUoMC41KTsgfVxuICAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKC0zNjBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoLTM2MGRlZyk7IH0gfVxuXG4vKlxuICogIFVzYWdlOlxuICpcbiAgICAgIDxkaXYgY2xhc3M9XCJzay1zcGlubmVyIHNrLXNwaW5uZXItcHVsc2VcIj48L2Rpdj5cbiAqXG4gKi9cbi5zay1zcGlubmVyLXB1bHNlIHtcbiAgd2lkdGg6IDQwcHg7XG4gIGhlaWdodDogNDBweDtcbiAgbWFyZ2luOiA0MHB4IGF1dG87XG4gIGJhY2tncm91bmQtY29sb3I6ICMzMzM7XG4gIGJvcmRlci1yYWRpdXM6IDEwMCU7XG4gIC13ZWJraXQtYW5pbWF0aW9uOiBzay1wdWxzZVNjYWxlT3V0IDFzIGluZmluaXRlIGVhc2UtaW4tb3V0O1xuICAgICAgICAgIGFuaW1hdGlvbjogc2stcHVsc2VTY2FsZU91dCAxcyBpbmZpbml0ZSBlYXNlLWluLW91dDsgfVxuXG5ALXdlYmtpdC1rZXlmcmFtZXMgc2stcHVsc2VTY2FsZU91dCB7XG4gIDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDApOyB9XG4gIDEwMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUoMSk7XG4gICAgb3BhY2l0eTogMDsgfSB9XG5cbkBrZXlmcmFtZXMgc2stcHVsc2VTY2FsZU91dCB7XG4gIDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDApOyB9XG4gIDEwMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUoMSk7XG4gICAgb3BhY2l0eTogMDsgfSB9XG5cbi8qXG4gKiAgVXNhZ2U6XG4gKlxuICAgICAgPGRpdiBjbGFzcz1cInNrLWNoYXNpbmctZG90c1wiPlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY2hpbGQgc2stZG90MVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY2hpbGQgc2stZG90MlwiPjwvZGl2PlxuICAgICAgPC9kaXY+XG4gKlxuICovXG4uc2stY2hhc2luZy1kb3RzIHtcbiAgbWFyZ2luOiA0MHB4IGF1dG87XG4gIHdpZHRoOiA0MHB4O1xuICBoZWlnaHQ6IDQwcHg7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAtd2Via2l0LWFuaW1hdGlvbjogc2stY2hhc2luZ0RvdHNSb3RhdGUgMnMgaW5maW5pdGUgbGluZWFyO1xuICAgICAgICAgIGFuaW1hdGlvbjogc2stY2hhc2luZ0RvdHNSb3RhdGUgMnMgaW5maW5pdGUgbGluZWFyOyB9XG4gIC5zay1jaGFzaW5nLWRvdHMgLnNrLWNoaWxkIHtcbiAgICB3aWR0aDogNjAlO1xuICAgIGhlaWdodDogNjAlO1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgdG9wOiAwO1xuICAgIGJhY2tncm91bmQtY29sb3I6ICMzMzM7XG4gICAgYm9yZGVyLXJhZGl1czogMTAwJTtcbiAgICAtd2Via2l0LWFuaW1hdGlvbjogc2stY2hhc2luZ0RvdHNCb3VuY2UgMnMgaW5maW5pdGUgZWFzZS1pbi1vdXQ7XG4gICAgICAgICAgICBhbmltYXRpb246IHNrLWNoYXNpbmdEb3RzQm91bmNlIDJzIGluZmluaXRlIGVhc2UtaW4tb3V0OyB9XG4gIC5zay1jaGFzaW5nLWRvdHMgLnNrLWRvdDIge1xuICAgIHRvcDogYXV0bztcbiAgICBib3R0b206IDA7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0xcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTFzOyB9XG5cbkAtd2Via2l0LWtleWZyYW1lcyBzay1jaGFzaW5nRG90c1JvdGF0ZSB7XG4gIDEwMCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDM2MGRlZyk7IH0gfVxuXG5Aa2V5ZnJhbWVzIHNrLWNoYXNpbmdEb3RzUm90YXRlIHtcbiAgMTAwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgzNjBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoMzYwZGVnKTsgfSB9XG5cbkAtd2Via2l0LWtleWZyYW1lcyBzay1jaGFzaW5nRG90c0JvdW5jZSB7XG4gIDAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDApOyB9XG4gIDUwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDEpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxKTsgfSB9XG5cbkBrZXlmcmFtZXMgc2stY2hhc2luZ0RvdHNCb3VuY2Uge1xuICAwJSwgMTAwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDApO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgwKTsgfVxuICA1MCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUoMSk7IH0gfVxuXG4vKlxuICogIFVzYWdlOlxuICpcbiAgICAgIDxkaXYgY2xhc3M9XCJzay10aHJlZS1ib3VuY2VcIj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNoaWxkIHNrLWJvdW5jZTFcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNoaWxkIHNrLWJvdW5jZTJcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNoaWxkIHNrLWJvdW5jZTNcIj48L2Rpdj5cbiAgICAgIDwvZGl2PlxuICpcbiAqL1xuLnNrLXRocmVlLWJvdW5jZSB7XG4gIG1hcmdpbjogNDBweCBhdXRvO1xuICB3aWR0aDogODBweDtcbiAgdGV4dC1hbGlnbjogY2VudGVyOyB9XG4gIC5zay10aHJlZS1ib3VuY2UgLnNrLWNoaWxkIHtcbiAgICB3aWR0aDogMjBweDtcbiAgICBoZWlnaHQ6IDIwcHg7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzMzMztcbiAgICBib3JkZXItcmFkaXVzOiAxMDAlO1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICAtd2Via2l0LWFuaW1hdGlvbjogc2stdGhyZWUtYm91bmNlIDEuNHMgZWFzZS1pbi1vdXQgMHMgaW5maW5pdGUgYm90aDtcbiAgICAgICAgICAgIGFuaW1hdGlvbjogc2stdGhyZWUtYm91bmNlIDEuNHMgZWFzZS1pbi1vdXQgMHMgaW5maW5pdGUgYm90aDsgfVxuICAuc2stdGhyZWUtYm91bmNlIC5zay1ib3VuY2UxIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTAuMzJzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC4zMnM7IH1cbiAgLnNrLXRocmVlLWJvdW5jZSAuc2stYm91bmNlMiB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjE2cztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTAuMTZzOyB9XG5cbkAtd2Via2l0LWtleWZyYW1lcyBzay10aHJlZS1ib3VuY2Uge1xuICAwJSwgODAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDApOyB9XG4gIDQwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDEpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxKTsgfSB9XG5cbkBrZXlmcmFtZXMgc2stdGhyZWUtYm91bmNlIHtcbiAgMCUsIDgwJSwgMTAwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDApO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgwKTsgfVxuICA0MCUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUoMSk7IH0gfVxuXG4vKlxuICogIFVzYWdlOlxuICpcbiAgICAgIDxkaXYgY2xhc3M9XCJzay1jaXJjbGVcIj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTEgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTIgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTMgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTQgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTUgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTYgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTcgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTggc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTkgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTEwIHNrLWNoaWxkXCI+PC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJzay1jaXJjbGUxMSBzay1jaGlsZFwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY2lyY2xlMTIgc2stY2hpbGRcIj48L2Rpdj5cbiAgICAgIDwvZGl2PlxuICpcbiAqL1xuLnNrLWNpcmNsZSB7XG4gIG1hcmdpbjogNDBweCBhdXRvO1xuICB3aWR0aDogNDBweDtcbiAgaGVpZ2h0OiA0MHB4O1xuICBwb3NpdGlvbjogcmVsYXRpdmU7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2hpbGQge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgbGVmdDogMDtcbiAgICB0b3A6IDA7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2hpbGQ6YmVmb3JlIHtcbiAgICBjb250ZW50OiAnJztcbiAgICBkaXNwbGF5OiBibG9jaztcbiAgICBtYXJnaW46IDAgYXV0bztcbiAgICB3aWR0aDogMTUlO1xuICAgIGhlaWdodDogMTUlO1xuICAgIGJhY2tncm91bmQtY29sb3I6ICMzMzM7XG4gICAgYm9yZGVyLXJhZGl1czogMTAwJTtcbiAgICAtd2Via2l0LWFuaW1hdGlvbjogc2stY2lyY2xlQm91bmNlRGVsYXkgMS4ycyBpbmZpbml0ZSBlYXNlLWluLW91dCBib3RoO1xuICAgICAgICAgICAgYW5pbWF0aW9uOiBzay1jaXJjbGVCb3VuY2VEZWxheSAxLjJzIGluZmluaXRlIGVhc2UtaW4tb3V0IGJvdGg7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlMiB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgzMGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSgzMGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgzMGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlMyB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSg2MGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSg2MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSg2MGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlNCB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSg5MGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSg5MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSg5MGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlNSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgxMjBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMTIwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDEyMGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlNiB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgxNTBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMTUwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDE1MGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlNyB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgxODBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMTgwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDE4MGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlOCB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgyMTBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMjEwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDIxMGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlOSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgyNDBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMjQwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDI0MGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlMTAge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMjcwZGVnKTtcbiAgICAgICAgLW1zLXRyYW5zZm9ybTogcm90YXRlKDI3MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgyNzBkZWcpOyB9XG4gIC5zay1jaXJjbGUgLnNrLWNpcmNsZTExIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDMwMGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSgzMDBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoMzAwZGVnKTsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGUxMiB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgzMzBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMzMwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDMzMGRlZyk7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlMjpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMS4xcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTEuMXM7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlMzpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMXM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IC0xczsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGU0OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjlzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC45czsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGU1OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjhzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC44czsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGU2OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjdzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC43czsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGU3OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjZzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC42czsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGU4OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjVzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC41czsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGU5OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjRzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC40czsgfVxuICAuc2stY2lyY2xlIC5zay1jaXJjbGUxMDpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMC4zcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTAuM3M7IH1cbiAgLnNrLWNpcmNsZSAuc2stY2lyY2xlMTE6YmVmb3JlIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTAuMnM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IC0wLjJzOyB9XG4gIC5zay1jaXJjbGUgLnNrLWNpcmNsZTEyOmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjFzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC4xczsgfVxuXG5ALXdlYmtpdC1rZXlmcmFtZXMgc2stY2lyY2xlQm91bmNlRGVsYXkge1xuICAwJSwgODAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDApOyB9XG4gIDQwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDEpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxKTsgfSB9XG5cbkBrZXlmcmFtZXMgc2stY2lyY2xlQm91bmNlRGVsYXkge1xuICAwJSwgODAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMCk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDApOyB9XG4gIDQwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDEpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxKTsgfSB9XG5cbi8qXG4gKiAgVXNhZ2U6XG4gKlxuICAgICAgPGRpdiBjbGFzcz1cInNrLWN1YmUtZ3JpZFwiPlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlMVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlMlwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlM1wiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlNFwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlNVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlNlwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlN1wiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlOFwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZSBzay1jdWJlOVwiPjwvZGl2PlxuICAgICAgPC9kaXY+XG4gKlxuICovXG4uc2stY3ViZS1ncmlkIHtcbiAgd2lkdGg6IDQwcHg7XG4gIGhlaWdodDogNDBweDtcbiAgbWFyZ2luOiA0MHB4IGF1dG87XG4gIC8qXG4gICAqIFNwaW5uZXIgcG9zaXRpb25zXG4gICAqIDEgMiAzXG4gICAqIDQgNSA2XG4gICAqIDcgOCA5XG4gICAqLyB9XG4gIC5zay1jdWJlLWdyaWQgLnNrLWN1YmUge1xuICAgIHdpZHRoOiAzMy4zMyU7XG4gICAgaGVpZ2h0OiAzMy4zMyU7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzMzMztcbiAgICBmbG9hdDogbGVmdDtcbiAgICAtd2Via2l0LWFuaW1hdGlvbjogc2stY3ViZUdyaWRTY2FsZURlbGF5IDEuM3MgaW5maW5pdGUgZWFzZS1pbi1vdXQ7XG4gICAgICAgICAgICBhbmltYXRpb246IHNrLWN1YmVHcmlkU2NhbGVEZWxheSAxLjNzIGluZmluaXRlIGVhc2UtaW4tb3V0OyB9XG4gIC5zay1jdWJlLWdyaWQgLnNrLWN1YmUxIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogMC4ycztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogMC4yczsgfVxuICAuc2stY3ViZS1ncmlkIC5zay1jdWJlMiB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IDAuM3M7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IDAuM3M7IH1cbiAgLnNrLWN1YmUtZ3JpZCAuc2stY3ViZTMge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAwLjRzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAwLjRzOyB9XG4gIC5zay1jdWJlLWdyaWQgLnNrLWN1YmU0IHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogMC4xcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogMC4xczsgfVxuICAuc2stY3ViZS1ncmlkIC5zay1jdWJlNSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IDAuMnM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IDAuMnM7IH1cbiAgLnNrLWN1YmUtZ3JpZCAuc2stY3ViZTYge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAwLjNzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAwLjNzOyB9XG4gIC5zay1jdWJlLWdyaWQgLnNrLWN1YmU3IHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogMC4wcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogMC4wczsgfVxuICAuc2stY3ViZS1ncmlkIC5zay1jdWJlOCB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IDAuMXM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IDAuMXM7IH1cbiAgLnNrLWN1YmUtZ3JpZCAuc2stY3ViZTkge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAwLjJzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAwLjJzOyB9XG5cbkAtd2Via2l0LWtleWZyYW1lcyBzay1jdWJlR3JpZFNjYWxlRGVsYXkge1xuICAwJSwgNzAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUzRCgxLCAxLCAxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUzRCgxLCAxLCAxKTsgfVxuICAzNSUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZTNEKDAsIDAsIDEpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZTNEKDAsIDAsIDEpOyB9IH1cblxuQGtleWZyYW1lcyBzay1jdWJlR3JpZFNjYWxlRGVsYXkge1xuICAwJSwgNzAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUzRCgxLCAxLCAxKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogc2NhbGUzRCgxLCAxLCAxKTsgfVxuICAzNSUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZTNEKDAsIDAsIDEpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZTNEKDAsIDAsIDEpOyB9IH1cblxuLypcbiAqICBVc2FnZTpcbiAqXG4gICAgICA8ZGl2IGNsYXNzPVwic2stZmFkaW5nLWNpcmNsZVwiPlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY2lyY2xlMSBzay1jaXJjbGVcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTIgc2stY2lyY2xlXCI+PC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJzay1jaXJjbGUzIHNrLWNpcmNsZVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY2lyY2xlNCBzay1jaXJjbGVcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTUgc2stY2lyY2xlXCI+PC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJzay1jaXJjbGU2IHNrLWNpcmNsZVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY2lyY2xlNyBzay1jaXJjbGVcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTggc2stY2lyY2xlXCI+PC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJzay1jaXJjbGU5IHNrLWNpcmNsZVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY2lyY2xlMTAgc2stY2lyY2xlXCI+PC9kaXY+XG4gICAgICAgIDxkaXYgY2xhc3M9XCJzay1jaXJjbGUxMSBzay1jaXJjbGVcIj48L2Rpdj5cbiAgICAgICAgPGRpdiBjbGFzcz1cInNrLWNpcmNsZTEyIHNrLWNpcmNsZVwiPjwvZGl2PlxuICAgICAgPC9kaXY+XG4gKlxuICovXG4uc2stZmFkaW5nLWNpcmNsZSB7XG4gIG1hcmdpbjogNDBweCBhdXRvO1xuICB3aWR0aDogNDBweDtcbiAgaGVpZ2h0OiA0MHB4O1xuICBwb3NpdGlvbjogcmVsYXRpdmU7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZSB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICBsZWZ0OiAwO1xuICAgIHRvcDogMDsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlOmJlZm9yZSB7XG4gICAgY29udGVudDogJyc7XG4gICAgZGlzcGxheTogYmxvY2s7XG4gICAgbWFyZ2luOiAwIGF1dG87XG4gICAgd2lkdGg6IDE1JTtcbiAgICBoZWlnaHQ6IDE1JTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjMzMzO1xuICAgIGJvcmRlci1yYWRpdXM6IDEwMCU7XG4gICAgLXdlYmtpdC1hbmltYXRpb246IHNrLWNpcmNsZUZhZGVEZWxheSAxLjJzIGluZmluaXRlIGVhc2UtaW4tb3V0IGJvdGg7XG4gICAgICAgICAgICBhbmltYXRpb246IHNrLWNpcmNsZUZhZGVEZWxheSAxLjJzIGluZmluaXRlIGVhc2UtaW4tb3V0IGJvdGg7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTIge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMzBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMzBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoMzBkZWcpOyB9XG4gIC5zay1mYWRpbmctY2lyY2xlIC5zay1jaXJjbGUzIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDYwZGVnKTtcbiAgICAgICAgLW1zLXRyYW5zZm9ybTogcm90YXRlKDYwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDYwZGVnKTsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlNCB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSg5MGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSg5MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSg5MGRlZyk7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTUge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMTIwZGVnKTtcbiAgICAgICAgLW1zLXRyYW5zZm9ybTogcm90YXRlKDEyMGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgxMjBkZWcpOyB9XG4gIC5zay1mYWRpbmctY2lyY2xlIC5zay1jaXJjbGU2IHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDE1MGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSgxNTBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoMTUwZGVnKTsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlNyB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgxODBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMTgwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDE4MGRlZyk7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTgge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMjEwZGVnKTtcbiAgICAgICAgLW1zLXRyYW5zZm9ybTogcm90YXRlKDIxMGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgyMTBkZWcpOyB9XG4gIC5zay1mYWRpbmctY2lyY2xlIC5zay1jaXJjbGU5IHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDI0MGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSgyNDBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoMjQwZGVnKTsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlMTAge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiByb3RhdGUoMjcwZGVnKTtcbiAgICAgICAgLW1zLXRyYW5zZm9ybTogcm90YXRlKDI3MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHJvdGF0ZSgyNzBkZWcpOyB9XG4gIC5zay1mYWRpbmctY2lyY2xlIC5zay1jaXJjbGUxMSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZSgzMDBkZWcpO1xuICAgICAgICAtbXMtdHJhbnNmb3JtOiByb3RhdGUoMzAwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlKDMwMGRlZyk7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTEyIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcm90YXRlKDMzMGRlZyk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHJvdGF0ZSgzMzBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiByb3RhdGUoMzMwZGVnKTsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlMjpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMS4xcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTEuMXM7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTM6YmVmb3JlIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTFzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMXM7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTQ6YmVmb3JlIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTAuOXM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IC0wLjlzOyB9XG4gIC5zay1mYWRpbmctY2lyY2xlIC5zay1jaXJjbGU1OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjhzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC44czsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlNjpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMC43cztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTAuN3M7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTc6YmVmb3JlIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTAuNnM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IC0wLjZzOyB9XG4gIC5zay1mYWRpbmctY2lyY2xlIC5zay1jaXJjbGU4OmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjVzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC41czsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlOTpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMC40cztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTAuNHM7IH1cbiAgLnNrLWZhZGluZy1jaXJjbGUgLnNrLWNpcmNsZTEwOmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IC0wLjNzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAtMC4zczsgfVxuICAuc2stZmFkaW5nLWNpcmNsZSAuc2stY2lyY2xlMTE6YmVmb3JlIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogLTAuMnM7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IC0wLjJzOyB9XG4gIC5zay1mYWRpbmctY2lyY2xlIC5zay1jaXJjbGUxMjpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAtMC4xcztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogLTAuMXM7IH1cblxuQC13ZWJraXQta2V5ZnJhbWVzIHNrLWNpcmNsZUZhZGVEZWxheSB7XG4gIDAlLCAzOSUsIDEwMCUge1xuICAgIG9wYWNpdHk6IDA7IH1cbiAgNDAlIHtcbiAgICBvcGFjaXR5OiAxOyB9IH1cblxuQGtleWZyYW1lcyBzay1jaXJjbGVGYWRlRGVsYXkge1xuICAwJSwgMzklLCAxMDAlIHtcbiAgICBvcGFjaXR5OiAwOyB9XG4gIDQwJSB7XG4gICAgb3BhY2l0eTogMTsgfSB9XG5cbi8qXG4gKiAgVXNhZ2U6XG4gKlxuICAgICAgPGRpdiBjbGFzcz1cInNrLWZvbGRpbmctY3ViZVwiPlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZTEgc2stY3ViZVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZTIgc2stY3ViZVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZTQgc2stY3ViZVwiPjwvZGl2PlxuICAgICAgICA8ZGl2IGNsYXNzPVwic2stY3ViZTMgc2stY3ViZVwiPjwvZGl2PlxuICAgICAgPC9kaXY+XG4gKlxuICovXG4uc2stZm9sZGluZy1jdWJlIHtcbiAgbWFyZ2luOiA0MHB4IGF1dG87XG4gIHdpZHRoOiA0MHB4O1xuICBoZWlnaHQ6IDQwcHg7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgLXdlYmtpdC10cmFuc2Zvcm06IHJvdGF0ZVooNDVkZWcpO1xuICAgICAgICAgIHRyYW5zZm9ybTogcm90YXRlWig0NWRlZyk7IH1cbiAgLnNrLWZvbGRpbmctY3ViZSAuc2stY3ViZSB7XG4gICAgZmxvYXQ6IGxlZnQ7XG4gICAgd2lkdGg6IDUwJTtcbiAgICBoZWlnaHQ6IDUwJTtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHNjYWxlKDEuMSk7XG4gICAgICAgIC1tcy10cmFuc2Zvcm06IHNjYWxlKDEuMSk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDEuMSk7IH1cbiAgLnNrLWZvbGRpbmctY3ViZSAuc2stY3ViZTpiZWZvcmUge1xuICAgIGNvbnRlbnQ6ICcnO1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICB0b3A6IDA7XG4gICAgbGVmdDogMDtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogIzMzMztcbiAgICAtd2Via2l0LWFuaW1hdGlvbjogc2stZm9sZEN1YmVBbmdsZSAyLjRzIGluZmluaXRlIGxpbmVhciBib3RoO1xuICAgICAgICAgICAgYW5pbWF0aW9uOiBzay1mb2xkQ3ViZUFuZ2xlIDIuNHMgaW5maW5pdGUgbGluZWFyIGJvdGg7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm0tb3JpZ2luOiAxMDAlIDEwMCU7XG4gICAgICAgIC1tcy10cmFuc2Zvcm0tb3JpZ2luOiAxMDAlIDEwMCU7XG4gICAgICAgICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAxMDAlIDEwMCU7IH1cbiAgLnNrLWZvbGRpbmctY3ViZSAuc2stY3ViZTIge1xuICAgIC13ZWJraXQtdHJhbnNmb3JtOiBzY2FsZSgxLjEpIHJvdGF0ZVooOTBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBzY2FsZSgxLjEpIHJvdGF0ZVooOTBkZWcpOyB9XG4gIC5zay1mb2xkaW5nLWN1YmUgLnNrLWN1YmUzIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMS4xKSByb3RhdGVaKDE4MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDEuMSkgcm90YXRlWigxODBkZWcpOyB9XG4gIC5zay1mb2xkaW5nLWN1YmUgLnNrLWN1YmU0IHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogc2NhbGUoMS4xKSByb3RhdGVaKDI3MGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHNjYWxlKDEuMSkgcm90YXRlWigyNzBkZWcpOyB9XG4gIC5zay1mb2xkaW5nLWN1YmUgLnNrLWN1YmUyOmJlZm9yZSB7XG4gICAgLXdlYmtpdC1hbmltYXRpb24tZGVsYXk6IDAuM3M7XG4gICAgICAgICAgICBhbmltYXRpb24tZGVsYXk6IDAuM3M7IH1cbiAgLnNrLWZvbGRpbmctY3ViZSAuc2stY3ViZTM6YmVmb3JlIHtcbiAgICAtd2Via2l0LWFuaW1hdGlvbi1kZWxheTogMC42cztcbiAgICAgICAgICAgIGFuaW1hdGlvbi1kZWxheTogMC42czsgfVxuICAuc2stZm9sZGluZy1jdWJlIC5zay1jdWJlNDpiZWZvcmUge1xuICAgIC13ZWJraXQtYW5pbWF0aW9uLWRlbGF5OiAwLjlzO1xuICAgICAgICAgICAgYW5pbWF0aW9uLWRlbGF5OiAwLjlzOyB9XG5cbkAtd2Via2l0LWtleWZyYW1lcyBzay1mb2xkQ3ViZUFuZ2xlIHtcbiAgMCUsIDEwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHBlcnNwZWN0aXZlKDE0MHB4KSByb3RhdGVYKC0xODBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBwZXJzcGVjdGl2ZSgxNDBweCkgcm90YXRlWCgtMTgwZGVnKTtcbiAgICBvcGFjaXR5OiAwOyB9XG4gIDI1JSwgNzUlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTQwcHgpIHJvdGF0ZVgoMGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHBlcnNwZWN0aXZlKDE0MHB4KSByb3RhdGVYKDBkZWcpO1xuICAgIG9wYWNpdHk6IDE7IH1cbiAgOTAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTQwcHgpIHJvdGF0ZVkoMTgwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTQwcHgpIHJvdGF0ZVkoMTgwZGVnKTtcbiAgICBvcGFjaXR5OiAwOyB9IH1cblxuQGtleWZyYW1lcyBzay1mb2xkQ3ViZUFuZ2xlIHtcbiAgMCUsIDEwJSB7XG4gICAgLXdlYmtpdC10cmFuc2Zvcm06IHBlcnNwZWN0aXZlKDE0MHB4KSByb3RhdGVYKC0xODBkZWcpO1xuICAgICAgICAgICAgdHJhbnNmb3JtOiBwZXJzcGVjdGl2ZSgxNDBweCkgcm90YXRlWCgtMTgwZGVnKTtcbiAgICBvcGFjaXR5OiAwOyB9XG4gIDI1JSwgNzUlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTQwcHgpIHJvdGF0ZVgoMGRlZyk7XG4gICAgICAgICAgICB0cmFuc2Zvcm06IHBlcnNwZWN0aXZlKDE0MHB4KSByb3RhdGVYKDBkZWcpO1xuICAgIG9wYWNpdHk6IDE7IH1cbiAgOTAlLCAxMDAlIHtcbiAgICAtd2Via2l0LXRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTQwcHgpIHJvdGF0ZVkoMTgwZGVnKTtcbiAgICAgICAgICAgIHRyYW5zZm9ybTogcGVyc3BlY3RpdmUoMTQwcHgpIHJvdGF0ZVkoMTgwZGVnKTtcbiAgICBvcGFjaXR5OiAwOyB9IH0iXX0= */") || true) && "_3023dc82")
 
-function onclick(action, state, emit){
-  return ()=>{
-    if (action === 'fetch'){
+class Component extends Nanocomponent {
+  constructor () {
+    super()
+  }
+
+  createElement (state, emit) {
+    return html`
+      <div>
+        ${buttons.map(button => {
+          return html`
+            <button
+              type="button"
+              class=${button.class}
+              onclick=${handleClick(button.id, state, emit)}
+              disabled=${state.fetch || state.save}
+              id=${button.id}>
+                ${button.text}
+                ${(() => {
+                  if (state[button.id]) {
+                    return html`
+                      <div class="sk-three-bounce">
+                        <div class="sk-child sk-bounce1"></div>
+                        <div class="sk-child sk-bounce2"></div>
+                        <div class="sk-child sk-bounce3"></div>
+                      </div>
+                    `
+                  } else {
+                    return ''
+                  }
+                })()}
+            </button>
+          `
+        })}
+      </div>
+    `
+  }
+
+  update (state) {
+    return true
+  }
+}
+
+function handleClick (action, state, emit) {
+  return () => {
+    if (action === 'fetch') {
       emit('pulling')
-      setTimeout(()=>{
+      setTimeout(() => {
         emit('pulled')
       }, 500)
-    } else if (action === 'save'){
+    } else if (action === 'save') {
       emit('pushing')
-      setTimeout(()=>{
+      setTimeout(() => {
         emit('pushed')
-        localStorage.setItem("chooData", JSON.stringify(state))
+        localStorage.setItem('chooData', JSON.stringify(state))
       }, 500)
     }
   }
 }
 
-function buttonGenerate(state, emit){
-  return button=>{
-    return html`
-      <button
-        type="button"
-        class=${button.class}
-        onclick=${onclick(button.id, state, emit)}
-        disabled=${state.fetch||state.save}
-        id=${button.id}>
-          ${button.text}
-          ${(()=>{
-            if (state[button.id]){
-              return  html `
-                <div class="sk-three-bounce">
-                  <div class="sk-child sk-bounce1"></div>
-                  <div class="sk-child sk-bounce2"></div>
-                  <div class="sk-child sk-bounce3"></div>
-                </div>
-              `
-            } else {
-              return ''
-            }
-          })()}
-      </button>
-    `
-  }
-}
+module.exports = new Component()
 
-module.exports = (state, emit)=>{
-  return html`${buttons.map(buttonGenerate(state, emit))}`
-}
-
-},{"../buttons.json":1,"choo/html":15,"sheetify/insert":37}],5:[function(require,module,exports){
+},{"../buttons.json":1,"choo/html":16,"nanocomponent":27,"sheetify/insert":44}],5:[function(require,module,exports){
 const { ctrlRemovable } = require('./decorate.js')
 
 function moveCtrl (square, line, x, y, uid, isMirror, ctrlx, ctrly, state) {
-  requestAnimationFrame(()=>{
-    if (square.isMirror&& isMirror){
+  requestAnimationFrame(() => {
+    if (square.isMirror && isMirror) {
       square.x = 2 * x - ctrlx
       square.y = 2 * y - ctrly
     } else {
@@ -252,17 +274,17 @@ function moveCtrl (square, line, x, y, uid, isMirror, ctrlx, ctrly, state) {
     }
 
     line.from = {x, y}
-    line.to = {x: square.x , y: square.y}
+    line.to = {x: square.x, y: square.y}
 
     stage.update()
   })
 }
 
-function createCtrl ({uid, x, y, isMirror}, state, emitter, pointx, pointy){
+function createCtrl ({uid, x, y, isMirror}, state, emitter, pointx, pointy) {
   var square = new createjs.Shape()
   var line = new createjs.Shape()
 
-  if (state.fetch){
+  if (state.fetch) {
     moveCtrl(square, line, pointx, pointy, uid, isMirror, x, y, state)
   } else {
     drawSquare(square)
@@ -283,7 +305,7 @@ function createCtrl ({uid, x, y, isMirror}, state, emitter, pointx, pointy){
   return {square, line}
 }
 
-function drawSquare(square){
+function drawSquare (square) {
   square.graphics
         .setStrokeStyle(1)
         .beginStroke('#f46c51')
@@ -291,32 +313,32 @@ function drawSquare(square){
         .drawRect(-2, -2, 4, 4)
 }
 
-function drawLine(line, x, y, x2, y2){
+function drawLine (line, x, y, x2, y2) {
   line.graphics
       .setStrokeStyle(1)
-      .beginStroke("#f46c51")
+      .beginStroke('#f46c51')
       .moveTo(x, y)
       .lineTo(x2, y2)
 }
 
-module.exports = ({uid, x, y, isMirror}, state, emitter, pointx, pointy)=>{
-  const {square, line} = createCtrl({uid, x, y, isMirror:false}, state, emitter, pointx, pointy)
+module.exports = ({uid, x, y, isMirror}, state, emitter, pointx, pointy) => {
+  const {square, line} = createCtrl({uid, x, y, isMirror: false}, state, emitter, pointx, pointy)
   var square2, line2
 
-  if (isMirror){
-    var o = createCtrl({uid, x, y, isMirror:true}, state, emitter, pointx, pointy)
+  if (isMirror) {
+    var o = createCtrl({uid, x, y, isMirror: true}, state, emitter, pointx, pointy)
     square2 = o.square
     line2 = o.line
   }
 
-  emitter.on('moveCtrl', ctrl=>{
+  emitter.on('moveCtrl', ctrl => {
     if (ctrl.uid !== uid) return
 
     moveCtrl(square, line, pointx, pointy, uid, false, ctrl.x, ctrl.y, state)
 
-    if (isMirror&&ctrl.isMirror){
-      if (square2 === void 0){
-        var o = createCtrl({uid, x, y, isMirror:true}, state, emitter, pointx, pointy)
+    if (isMirror && ctrl.isMirror) {
+      if (square2 === void 0) {
+        var o = createCtrl({uid, x, y, isMirror: true}, state, emitter, pointx, pointy)
         square2 = o.square
         line2 = o.line
       }
@@ -324,16 +346,16 @@ module.exports = ({uid, x, y, isMirror}, state, emitter, pointx, pointy)=>{
     }
   })
 
-  emitter.on('changeCurrent', ()=>{
+  emitter.on('changeCurrent', () => {
     const {currentId, preId} = state
 
-    if (![currentId, preId].includes(uid)|| currentId === preId) return
+    if (![currentId, preId].includes(uid) || currentId === preId) return
 
     if (currentId !== uid) {
       square.graphics.clear()
       line.graphics.clear()
 
-      if (isMirror){
+      if (isMirror) {
         square2.graphics.clear()
         line2.graphics.clear()
       }
@@ -341,7 +363,7 @@ module.exports = ({uid, x, y, isMirror}, state, emitter, pointx, pointy)=>{
       drawSquare(square)
       drawLine(line, line.from.x, line.from.y, line.to.x, line.to.y)
 
-      if (isMirror){
+      if (isMirror) {
         drawSquare(square2)
         drawLine(line2, line2.from.x, line2.from.y, line2.to.x, line2.to.y)
       }
@@ -350,19 +372,19 @@ module.exports = ({uid, x, y, isMirror}, state, emitter, pointx, pointy)=>{
     stage.update()
   })
 
-  emitter.on('removeOnlyCtrl', ruid=>{
-    if (ruid === uid){
+  emitter.on('removeOnlyCtrl', ruid => {
+    if (ruid === uid) {
       container.removeChild(square, line)
 
-      if (isMirror){
+      if (isMirror) {
         container.removeChild(square2, line2)
       }
       stage.update()
     }
   })
 
-  emitter.on('removeMirrorCtrl', ruid=>{
-    if (ruid === uid){
+  emitter.on('removeMirrorCtrl', ruid => {
+    if (ruid === uid) {
       isMirror = false
       square2.graphics.clear()
       line2.graphics.clear()
@@ -370,44 +392,44 @@ module.exports = ({uid, x, y, isMirror}, state, emitter, pointx, pointy)=>{
     }
   })
 
-  emitter.on('removeUnMirrorCtrl', ruid=>{
-    if (ruid === uid){
+  emitter.on('removeUnMirrorCtrl', ruid => {
+    if (ruid === uid) {
       isMirror = true
     }
   })
 }
 
 },{"./decorate.js":8}],6:[function(require,module,exports){
-function drawCurve(g, ctrls, oOne, nOne){
-  var oCtrl = ctrls.find(ctrl => ctrl.uid === oOne.uid)
-    , nCtrl = ctrls.find(ctrl => ctrl.uid === nOne.uid)
-    , {x, y} = oOne
+function drawCurve (g, ctrls, oOne, nOne) {
+  var oCtrl = ctrls.find(ctrl => ctrl.uid === oOne.uid),
+    nCtrl = ctrls.find(ctrl => ctrl.uid === nOne.uid),
+    {x, y} = oOne
 
   g.setStrokeStyle(1)
-   .beginStroke("#000")
+   .beginStroke('#000')
    .moveTo(x, y)
 
-   if (oCtrl !== void 0 && nCtrl === void 0){
-     g.quadraticCurveTo(oCtrl.x, oCtrl.y, nOne.x, nOne.y)
-   } else if (oCtrl === void 0 && nCtrl !== void 0){
-     if (nCtrl.isMirror){
-       g.quadraticCurveTo(2*nOne.x-nCtrl.x, 2*nOne.y-nCtrl.y, nOne.x, nOne.y)
-     } else {
-       g.lineTo(nOne.x, nOne.y)
-     }
-   } else if (oCtrl !== void 0 && nCtrl !== void 0){
-     if (nCtrl.isMirror){
-       g.bezierCurveTo(oCtrl.x, oCtrl.y, 2*nOne.x-nCtrl.x, 2*nOne.y-nCtrl.y, nOne.x, nOne.y)
-     } else {
-       g.quadraticCurveTo(oCtrl.x, oCtrl.y, nOne.x, nOne.y)
-     }
-   } else {
-     g.lineTo(nOne.x, nOne.y)
-   }
+  if (oCtrl !== void 0 && nCtrl === void 0) {
+    g.quadraticCurveTo(oCtrl.x, oCtrl.y, nOne.x, nOne.y)
+  } else if (oCtrl === void 0 && nCtrl !== void 0) {
+    if (nCtrl.isMirror) {
+      g.quadraticCurveTo(2 * nOne.x - nCtrl.x, 2 * nOne.y - nCtrl.y, nOne.x, nOne.y)
+    } else {
+      g.lineTo(nOne.x, nOne.y)
+    }
+  } else if (oCtrl !== void 0 && nCtrl !== void 0) {
+    if (nCtrl.isMirror) {
+      g.bezierCurveTo(oCtrl.x, oCtrl.y, 2 * nOne.x - nCtrl.x, 2 * nOne.y - nCtrl.y, nOne.x, nOne.y)
+    } else {
+      g.quadraticCurveTo(oCtrl.x, oCtrl.y, nOne.x, nOne.y)
+    }
+  } else {
+    g.lineTo(nOne.x, nOne.y)
+  }
 }
 
-module.exports = (oOne, nOne, state, emitter)=>{
-  if (oOne === void 0||nOne === void 0) return
+module.exports = (oOne, nOne, state, emitter) => {
+  if (oOne === void 0 || nOne === void 0) return
 
   const {ctrls} = state
   var line = new createjs.Shape()
@@ -415,7 +437,7 @@ module.exports = (oOne, nOne, state, emitter)=>{
 
   drawCurve(line.graphics, ctrls, oOne, nOne)
 
-  emitter.on('remove', uid=>{
+  emitter.on('remove', uid => {
     if (!line.uids.includes(uid)) return
 
     container.removeChild(line)
@@ -423,10 +445,10 @@ module.exports = (oOne, nOne, state, emitter)=>{
     stage.update()
   })
 
-  emitter.on('moveCtrl', ctrl=>{
+  emitter.on('moveCtrl', ctrl => {
     if (!line.uids.includes(ctrl.uid)) return
 
-    requestAnimationFrame(()=>{
+    requestAnimationFrame(() => {
       const {ctrls} = state
       line.graphics.clear()
       drawCurve(line.graphics, ctrls, oOne, nOne)
@@ -434,7 +456,7 @@ module.exports = (oOne, nOne, state, emitter)=>{
     })
   })
 
-  emitter.on('removeOnlyCtrl', ruid=>{
+  emitter.on('removeOnlyCtrl', ruid => {
     if (!line.uids.includes(ruid)) return
 
     const {ctrls} = state
@@ -454,7 +476,7 @@ module.exports = (oOne, nOne, state, emitter)=>{
 const { cursurable, movable, removable, ctrlable, preventable, draggable } = require('./decorate.js')
 var addCtrl = require('./addCtrl.js')
 
-module.exports = ({x, y, uid}, state, emitter)=>{
+module.exports = ({x, y, uid}, state, emitter) => {
   var point = new createjs.Shape()
   var color = uid === state.currentId ? '#000' : '#fff'
   point.graphics
@@ -477,8 +499,8 @@ module.exports = ({x, y, uid}, state, emitter)=>{
   container.addChild(point)
   stage.update()
 
-  emitter.on('changeCurrent', ()=>{
-    if (![state.preId, state.currentId].includes(uid)||state.preId === state.currentId) return
+  emitter.on('changeCurrent', () => {
+    if (![state.preId, state.currentId].includes(uid) || state.preId === state.currentId) return
 
     var color = point.uid === state.currentId ? '#000' : '#fff'
 
@@ -489,7 +511,7 @@ module.exports = ({x, y, uid}, state, emitter)=>{
     stage.update()
   })
 
-  emitter.on('remove', uid =>{
+  emitter.on('remove', uid => {
     if (point.uid !== uid) return
 
     container.removeChild(point)
@@ -497,7 +519,7 @@ module.exports = ({x, y, uid}, state, emitter)=>{
     stage.update()
   })
 
-  emitter.on('createCtrl', ({uid, x, y, isMirror})=>{
+  emitter.on('createCtrl', ({uid, x, y, isMirror}) => {
     if (point.uid !== uid) return
 
     addCtrl({uid, x, y, isMirror: isMirror}, state, emitter, point.x, point.y)
@@ -505,18 +527,16 @@ module.exports = ({x, y, uid}, state, emitter)=>{
 }
 
 },{"./addCtrl.js":5,"./decorate.js":8}],8:[function(require,module,exports){
-exports.cursurable = (target, state)=>{
-  target.on('mouseover', ()=>{
+exports.cursurable = (target, state) => {
+  target.on('mouseover', () => {
     var currentId = state.currentId
     var drawType = state.drawType
 
-    if (drawType === 'move'){
+    if (drawType === 'move') {
       $('#canvas').addClass('move')
-    }
-    else if (drawType === 'remove'){
+    } else if (drawType === 'remove') {
       $('#canvas').addClass('remove')
-    }
-    else if (drawType === 'line' && currentId !== target.uid) {
+    } else if (drawType === 'line' && currentId !== target.uid) {
       $('#canvas').addClass('unable')
     }
 
@@ -525,30 +545,30 @@ exports.cursurable = (target, state)=>{
     }
   })
 
-  target.on('mouseout', ()=>{
+  target.on('mouseout', () => {
     $('#canvas').removeClass('remove unable ctrlline move')
   })
 }
 
-exports.movable = (target, state, emitter)=>{
-  target.on('pressmove', e=>{
+exports.movable = (target, state, emitter) => {
+  target.on('pressmove', e => {
     var drawType = state.drawType
 
     if (drawType !== 'move') return
 
-    var x = e.stageX - target.x
-      , y = e.stageY - target.y
+    var x = e.stageX - target.x,
+      y = e.stageY - target.y
 
     emitter.emit('moveContainer', {x, y})
   })
 }
 
-exports.removable = (target, state, emitter)=>{
-  target.on('mousedown', ()=>{
+exports.removable = (target, state, emitter) => {
+  target.on('mousedown', () => {
     var drawType = state.drawType
 
-    if (drawType === 'remove'){
-      setTimeout(()=>{
+    if (drawType === 'remove') {
+      setTimeout(() => {
         emitter.emit('preventEvent', false)
         emitter.emit('removePoint', target.uid)
       })
@@ -556,88 +576,88 @@ exports.removable = (target, state, emitter)=>{
   })
 }
 
-exports.ctrlable = (target, state, emitter)=>{
-  target.on('click', ()=>{
+exports.ctrlable = (target, state, emitter) => {
+  target.on('click', () => {
     var drawType = state.drawType
 
-    if (drawType === 'ctrlline'){
-      setTimeout(()=>{
+    if (drawType === 'ctrlline') {
+      setTimeout(() => {
         emitter.emit('preventEvent', false)
         emitter.emit('changeCurrentId', target.uid)
       })
     }
   })
 
-  target.on('pressmove', e=>{
+  target.on('pressmove', e => {
     var drawType = state.drawType
     var currentId = state.currentId
 
     if (target.uid === currentId && drawType === 'ctrlline') {
-      var x = e.stageX - state.container.x
-        , y = e.stageY - state.container.y
-        , isMirror = true
+      var x = e.stageX - state.container.x,
+        y = e.stageY - state.container.y,
+        isMirror = true
 
       emitter.emit('operateCtrl', {uid: currentId, x, y, isMirror})
     }
   })
 
-  target.on("pressup", ()=>{
+  target.on('pressup', () => {
     emitter.emit('preventDrag', true)
   })
 }
 
-exports.ctrlRemovable = (target, state, emitter)=>{
-  target.on("mousedown", ()=>{
+exports.ctrlRemovable = (target, state, emitter) => {
+  target.on('mousedown', () => {
     var drawType = state.drawType
 
-    if (drawType === 'remove'){
+    if (drawType === 'remove') {
       emitter.emit('removeCtrl', target.uid)
     }
   })
 
-  target.on("mouseover", ()=>{
+  target.on('mouseover', () => {
     var drawType = state.drawType
-    if (drawType === 'remove'){
-      $("#canvas").addClass("remove")
+    if (drawType === 'remove') {
+      $('#canvas').addClass('remove')
     }
   })
 
-  target.on("mouseout", ()=>{
-    $("#canvas").removeClass("remove")
+  target.on('mouseout', () => {
+    $('#canvas').removeClass('remove')
   })
 }
 
-exports.preventable = (target, state, emitter)=>{
-  target.on('mousedown', ()=>{
+exports.preventable = (target, state, emitter) => {
+  target.on('mousedown', () => {
     emitter.emit('preventEvent', true)
   })
 }
 
-exports.draggable = (()=>{
-  var innerFunc = (e, target, state, emitter)=>{
+exports.draggable = (() => {
+  var innerFunc = (e, target, state, emitter) => {
     const {currentId, drawType} = state
 
     emitter.emit('preventEvent', true)
 
-    if (target.uid === currentId && drawType === 'line'){
-      var x = e.stageX - container.x
-        , y = e.stageY - container.y
-        , isMirror = false
+    if (target.uid === currentId && drawType === 'line') {
+      var x = e.stageX - container.x,
+        y = e.stageY - container.y,
+        isMirror = false
 
       emitter.emit('operateCtrl', {uid: currentId, x, y, isMirror})
     }
   }
 
-  return (target, state, emitter)=>{
-    target.on('mousedown', e=>{
+  return (target, state, emitter) => {
+    target.on('mousedown', e => {
       innerFunc(e, target, state, emitter)
     })
 
-    target.on("pressmove", e=>{
+    target.on('pressmove', e => {
       innerFunc(e, target, state, emitter)
     })
 
-    target.on("pressup", ()=>{
+    target.on('pressup', () => {
       emitter.emit('preventEvent', false)
       emitter.emit('preventDrag', true)
     })
@@ -645,7 +665,7 @@ exports.draggable = (()=>{
 })()
 
 },{}],9:[function(require,module,exports){
-module.exports = o=>{
+module.exports = o => {
   container.set(o)
   stage.update()
 }
@@ -655,34 +675,33 @@ var addPoint = require('./scribe/addPoint.js')
 var addLine = require('./scribe/addLine.js')
 var moveContainer = require('./scribe/moveContainer.js')
 
-module.exports = function(state, emitter){
+module.exports = function (state, emitter) {
   const INIT_DATA = {
-    drawType: "line",
+    drawType: 'line',
     points: [],
-    ctrls:[],
+    ctrls: [],
     currentId: '',
     preId: '',
     countId: 0,
     container: {
-      x:0,
-      y:0
+      x: 0,
+      y: 0
     },
     isPreventEvent: false,
     isPreventDrag: false,
     isMouseDown: false,
     fetch: false,
-    save: false,
+    save: false
   }
 
   Object.assign(state, INIT_DATA)
 
-  emitter.on('changeDraw', drawType=>{
+  emitter.on('changeDraw', drawType => {
     state.drawType = drawType
   })
 
-  emitter.on('addPoint', nOne=>{
-
-    if (!state.fetch){
+  emitter.on('addPoint', nOne => {
+    if (!state.fetch) {
       state.preId = state.currentId
       state.currentId = nOne.uid
       emitter.emit('changeCurrent')
@@ -693,32 +712,31 @@ module.exports = function(state, emitter){
     var oOne = state.points[ni - 1]
     addPoint(nOne, state, emitter)
 
-    if (ni !== 0){
+    if (ni !== 0) {
       addLine(oOne, nOne, state, emitter)
     }
-
   })
 
-  emitter.on('removePoint', uid=>{
-    var one = state.points.find(p=>p.uid === uid)
+  emitter.on('removePoint', uid => {
+    var one = state.points.find(p => p.uid === uid)
     var i = state.points.indexOf(one)
-    var oOne = state.points[i-1]
-    var nOne = state.points[i+1]
+    var oOne = state.points[i - 1]
+    var nOne = state.points[i + 1]
 
     addLine(oOne, nOne, state, emitter)
 
-    state.points = state.points.filter(p=>{
+    state.points = state.points.filter(p => {
       return p.uid !== uid
     })
 
-    state.ctrls = state.ctrls.filter(ctrl=>{
+    state.ctrls = state.ctrls.filter(ctrl => {
       return ctrl.uid !== uid
     })
 
     emitter.emit('remove', uid)
     emitter.emit('removeOnlyCtrl', uid)
 
-    if (state.points.length > 0){
+    if (state.points.length > 0) {
       var currentId = state.points[state.points.length - 1].uid
       state.preId = state.currentId
       state.currentId = currentId
@@ -726,82 +744,81 @@ module.exports = function(state, emitter){
     }
   })
 
-  emitter.on('moveContainer', o=>{
+  emitter.on('moveContainer', o => {
     state.container = o
     moveContainer(o)
   })
 
-  emitter.on('preventEvent', bool=>{
+  emitter.on('preventEvent', bool => {
     state.isPreventEvent = bool
   })
 
-  emitter.on('preventDrag', bool=>{
+  emitter.on('preventDrag', bool => {
     state.isPreventDrag = bool
   })
 
-  emitter.on('mouseDown', bool=>{
+  emitter.on('mouseDown', bool => {
     state.isMouseDown = bool
   })
 
-  emitter.on('changeCurrentId', uid=>{
+  emitter.on('changeCurrentId', uid => {
     state.preId = state.currentId
     state.currentId = uid
     emitter.emit('changeCurrent', uid)
   })
 
-  emitter.on('operateCtrl', ({uid, x, y, isMirror})=>{
-    var ctrl = state.ctrls.find(ctrl=>ctrl.uid === uid)
+  emitter.on('operateCtrl', ({uid, x, y, isMirror}) => {
+    var ctrl = state.ctrls.find(ctrl => ctrl.uid === uid)
     var isNew = false
 
-    if (ctrl === void 0){
+    if (ctrl === void 0) {
       isNew = true
       ctrl = {uid, x, y, isMirror}
       state.ctrls.push(ctrl)
     } else {
       var arr = state.ctrls.slice(0)
       var i = state.ctrls.indexOf(ctrl)
-      if (ctrl.isMirror !== isMirror){
-        if (isMirror===false){
+      if (ctrl.isMirror !== isMirror) {
+        if (isMirror === false) {
           emitter.emit('removeMirrorCtrl', uid)
-        } else if (isMirror === true){
+        } else if (isMirror === true) {
           emitter.emit('removeUnMirrorCtrl', uid)
         }
-
       }
       ctrl = {uid, x, y, isMirror}
       arr[i] = ctrl
       state.ctrls = arr
     }
 
-    if (isNew){
+    if (isNew) {
       emitter.emit('createCtrl', ctrl)
     } else {
       emitter.emit('moveCtrl', ctrl)
     }
   })
 
-  emitter.on('removeCtrl', uid=>{
-    state.ctrls = state.ctrls.filter(ctrl=>{
+  emitter.on('removeCtrl', uid => {
+    state.ctrls = state.ctrls.filter(ctrl => {
       return ctrl.uid !== uid
     })
     emitter.emit('removeOnlyCtrl', uid)
   })
 
-  emitter.on('increaseCountId', ()=>{
+  emitter.on('increaseCountId', () => {
     state.countId++
   })
 
-  emitter.on('pulling', ()=>{
+  emitter.on('pulling', () => {
     state.fetch = true
     emitter.emit('render')
   })
 
-  emitter.on('pushing', ()=>{
+  emitter.on('pushing', () => {
     state.save = true
     emitter.emit('render')
   })
 
-  emitter.on('pulled', ()=>{
+  emitter.on('pulled', () => {
     container.removeAllChildren()
 
     stage.update()
@@ -815,32 +832,32 @@ module.exports = function(state, emitter){
       'changeCurrent',
       'remove'
     ]
-    scribeEvents.forEach(eventName=>{
+    scribeEvents.forEach(eventName => {
       emitter.removeAllListeners(eventName)
     })
 
-    Object.assign(state, JSON.parse(localStorage.getItem("chooData")))
+    Object.assign(state, JSON.parse(localStorage.getItem('chooData')))
 
     state.fetch = true
 
     moveContainer(state.container)
 
-    state.points.forEach((p, i)=>{
+    state.points.forEach((p, i) => {
       emitter.emit('addPoint', p)
 
-      var ctrl = state.ctrls.find(ctrl=>ctrl.uid === p.uid)
+      var ctrl = state.ctrls.find(ctrl => ctrl.uid === p.uid)
 
-      if (ctrl){
+      if (ctrl) {
         emitter.emit('createCtrl', ctrl)
       }
     })
 
-    $('#'+state.drawType).focus()
+    $('#' + state.drawType).focus()
     state.fetch = false
     emitter.emit('render')
   })
 
-  emitter.on('pushed', ()=>{
+  emitter.on('pushed', () => {
     state.save = false
     emitter.emit('render')
   })
@@ -867,21 +884,21 @@ app.route('/', mainView)
 app.route('/choo-scriber', mainView)
 app.mount('body')
 
-function mainView(state, emit){
+function mainView (state, emit) {
   return html`
     <body class=${prefix}>
       <div class="container">
-        ${storeButton(state, emit)}
+        ${storeButton.render(state, emit)}
         <div class="flex-box">
-          ${scribeButton(state, emit)}
-          ${scribeCanvas(state, emit)}
+          ${scribeButton.render(state, emit)}
+          ${scribeCanvas.render(state, emit)}
         </div>
       </div>
     </body>
   `
 }
 
-},{"./app/components/scribeButton.js":2,"./app/components/scribeCanvas.js":3,"./app/components/storeButton.js":4,"./app/store.js":10,"choo":16,"choo/html":15,"jquery":21,"sheetify/insert":37}],12:[function(require,module,exports){
+},{"./app/components/scribeButton.js":2,"./app/components/scribeCanvas.js":3,"./app/components/storeButton.js":4,"./app/store.js":10,"choo":17,"choo/html":16,"jquery":24,"sheetify/insert":44}],12:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1375,7 +1392,7 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":40}],13:[function(require,module,exports){
+},{"util/":47}],13:[function(require,module,exports){
 var trailingNewlineRegex = /\n[\s]+$/
 var leadingNewlineRegex = /^\n[\s]+/
 var trailingSpaceRegex = /[\s]+$/
@@ -1609,10 +1626,12 @@ module.exports = hyperx(belCreateElement, {comments: true})
 module.exports.default = module.exports
 module.exports.createElement = belCreateElement
 
-},{"./appendChild":13,"hyperx":19}],15:[function(require,module,exports){
+},{"./appendChild":13,"hyperx":22}],15:[function(require,module,exports){
+
+},{}],16:[function(require,module,exports){
 module.exports = require('bel')
 
-},{"bel":14}],16:[function(require,module,exports){
+},{"bel":14}],17:[function(require,module,exports){
 var scrollToAnchor = require('scroll-to-anchor')
 var documentReady = require('document-ready')
 var nanolocation = require('nanolocation')
@@ -1692,7 +1711,9 @@ Choo.prototype.route = function (route, handler) {
 
 Choo.prototype.use = function (cb) {
   assert.equal(typeof cb, 'function', 'choo.use: cb should be type function')
-  var endTiming = nanotiming('choo.use')
+  var msg = 'choo.use'
+  msg = cb.storeName ? msg + '(' + cb.storeName + ')' : msg
+  var endTiming = nanotiming(msg)
   cb(this.state, this.emitter, this)
   endTiming()
 }
@@ -1741,8 +1762,8 @@ Choo.prototype.start = function () {
   }
 
   this.state.href = this._createLocation()
-  this._tree = this.router(this.state.href)
   this.state.query = nanoquery(window.location.search)
+  this._tree = this.router(this.state.href)
   assert.ok(this._tree, 'choo.start: no valid DOM node returned for location ' + this.state.href)
 
   this.emitter.prependListener(self._events.RENDER, nanoraf(function () {
@@ -1809,7 +1830,7 @@ Choo.prototype.toString = function (location, state) {
   return html.toString()
 }
 
-},{"assert":12,"document-ready":17,"nanobus":23,"nanohref":24,"nanolocation":25,"nanomorph":26,"nanoquery":29,"nanoraf":30,"nanorouter":31,"nanotiming":32,"scroll-to-anchor":36,"xtend":43}],17:[function(require,module,exports){
+},{"assert":12,"document-ready":18,"nanobus":26,"nanohref":30,"nanolocation":31,"nanomorph":32,"nanoquery":35,"nanoraf":36,"nanorouter":37,"nanotiming":38,"scroll-to-anchor":43,"xtend":50}],18:[function(require,module,exports){
 'use strict'
 
 var assert = require('assert')
@@ -1828,7 +1849,45 @@ function ready (callback) {
   })
 }
 
-},{"assert":12}],18:[function(require,module,exports){
+},{"assert":12}],19:[function(require,module,exports){
+(function (global){
+var topLevel = typeof global !== 'undefined' ? global :
+    typeof window !== 'undefined' ? window : {}
+var minDoc = require('min-document');
+
+var doccy;
+
+if (typeof document !== 'undefined') {
+    doccy = document;
+} else {
+    doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'];
+
+    if (!doccy) {
+        doccy = topLevel['__GLOBAL_DOCUMENT_CACHE@4'] = minDoc;
+    }
+}
+
+module.exports = doccy;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"min-document":15}],20:[function(require,module,exports){
+(function (global){
+var win;
+
+if (typeof window !== "undefined") {
+    win = window;
+} else if (typeof global !== "undefined") {
+    win = global;
+} else if (typeof self !== "undefined"){
+    win = self;
+} else {
+    win = {};
+}
+
+module.exports = win;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],21:[function(require,module,exports){
 module.exports = attributeToProperty
 
 var transform = {
@@ -1849,7 +1908,7 @@ function attributeToProperty (h) {
   }
 }
 
-},{}],19:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 var attrToProp = require('hyperscript-attribute-to-property')
 
 var VAR = 0, TEXT = 1, OPEN = 2, CLOSE = 3, ATTR = 4
@@ -2129,7 +2188,7 @@ var closeRE = RegExp('^(' + [
 ].join('|') + ')(?:[\.#][a-zA-Z0-9\u007F-\uFFFF_:-]+)*$')
 function selfClosing (tag) { return closeRE.test(tag) }
 
-},{"hyperscript-attribute-to-property":18}],20:[function(require,module,exports){
+},{"hyperscript-attribute-to-property":21}],23:[function(require,module,exports){
 var containers = []; // will store container HTMLElement references
 var styleElements = []; // will store {prepend: HTMLElement, append: HTMLElement}
 
@@ -2189,7 +2248,7 @@ function createStyleElement() {
 module.exports = insertCss;
 module.exports.insertCss = insertCss;
 
-},{}],21:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v3.2.1
  * https://jquery.com/
@@ -12444,7 +12503,7 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
-},{}],22:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 assert.notEqual = notEqual
 assert.notOk = notOk
 assert.equal = equal
@@ -12468,7 +12527,7 @@ function assert (t, m) {
   if (!t) throw new Error(m || 'AssertionError')
 }
 
-},{}],23:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var splice = require('remove-array-items')
 var nanotiming = require('nanotiming')
 var assert = require('assert')
@@ -12622,7 +12681,231 @@ Nanobus.prototype._emit = function (arr, eventName, data, uuid) {
   }
 }
 
-},{"assert":12,"nanotiming":32,"remove-array-items":35}],24:[function(require,module,exports){
+},{"assert":12,"nanotiming":38,"remove-array-items":42}],27:[function(require,module,exports){
+var document = require('global/document')
+var nanotiming = require('nanotiming')
+var morph = require('nanomorph')
+var onload = require('on-load')
+var OL_KEY_ID = onload.KEY_ID
+var OL_ATTR_ID = onload.KEY_ATTR
+var assert = require('assert')
+
+module.exports = Nanocomponent
+
+function makeID () {
+  return 'ncid-' + Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1)
+}
+
+function Nanocomponent (name) {
+  this._hasWindow = typeof window !== 'undefined'
+  this._id = null // represents the id of the root node
+  this._ncID = null // internal nanocomponent id
+  this._olID = null
+  this._proxy = null
+  this._loaded = false // Used to debounce on-load when child-reordering
+  this._rootNodeName = null
+  this._name = name || 'nanocomponent'
+  this._rerender = false
+
+  this._handleLoad = this._handleLoad.bind(this)
+  this._handleUnload = this._handleUnload.bind(this)
+
+  this._arguments = []
+
+  var self = this
+
+  Object.defineProperty(this, 'element', {
+    get: function () {
+      var el = document.getElementById(self._id)
+      if (el) return el.dataset.nanocomponent === self._ncID ? el : undefined
+    }
+  })
+}
+
+Nanocomponent.prototype.render = function () {
+  var timing = nanotiming(this._name + '.render')
+  var self = this
+  var args = new Array(arguments.length)
+  var el
+  for (var i = 0; i < arguments.length; i++) args[i] = arguments[i]
+  if (!this._hasWindow) {
+    el = this.createElement.apply(this, args)
+    timing()
+    return el
+  } else if (this.element) {
+    el = this.element  // retain reference, as the ID might change on render
+    var shouldUpdate = this._rerender || this.update.apply(this, args)
+    if (this._rerender) this._render = false
+    if (shouldUpdate) {
+      morph(el, this._handleRender(args))
+      if (this.afterupdate) this.afterupdate(el)
+    }
+    if (!this._proxy) { this._proxy = this._createProxy() }
+    timing()
+    return this._proxy
+  } else {
+    this._reset()
+    el = this._handleRender(args)
+    if (this.beforerender) this.beforerender(el)
+    if (this.load || this.unload || this.afterreorder) {
+      onload(el, self._handleLoad, self._handleUnload, self._ncID)
+      this._olID = el.dataset[OL_KEY_ID]
+    }
+    timing()
+    return el
+  }
+}
+
+Nanocomponent.prototype.rerender = function () {
+  assert(this.element, 'nanocomponent: cant rerender on an unmounted dom node')
+  this._rerender = true
+  this.render.apply(this, this._arguments)
+}
+
+Nanocomponent.prototype._handleRender = function (args) {
+  var el = this.createElement.apply(this, args)
+  if (!this._rootNodeName) this._rootNodeName = el.nodeName
+  assert(el instanceof window.HTMLElement, 'nanocomponent: createElement should return a DOM node')
+  assert.equal(this._rootNodeName, el.nodeName, 'nanocomponent: root node types cannot differ between re-renders')
+  this._arguments = args
+  return this._brandNode(this._ensureID(el))
+}
+
+Nanocomponent.prototype._createProxy = function () {
+  var proxy = document.createElement('div')
+  var self = this
+  this._brandNode(proxy)
+  proxy.id = this._id
+  proxy.setAttribute('data-proxy', '')
+  proxy.isSameNode = function (el) {
+    return (el && el.dataset.nanocomponent === self._ncID)
+  }
+  return proxy
+}
+
+Nanocomponent.prototype._reset = function () {
+  this._ncID = makeID()
+  this._olID = null
+  this._id = null
+  this._proxy = null
+  this._rootNodeName = null
+}
+
+Nanocomponent.prototype._brandNode = function (node) {
+  node.setAttribute('data-nanocomponent', this._ncID)
+  if (this._olID) node.setAttribute(OL_ATTR_ID, this._olID)
+  return node
+}
+
+Nanocomponent.prototype._ensureID = function (node) {
+  if (node.id) this._id = node.id
+  else node.id = this._id = this._ncID
+  // Update proxy node ID if it changed
+  if (this._proxy && this._proxy.id !== this._id) this._proxy.id = this._id
+  return node
+}
+
+Nanocomponent.prototype._handleLoad = function (el) {
+  if (this._loaded) {
+    if (this.afterreorder) this.afterreorder(el)
+    return // Debounce child-reorders
+  }
+  this._loaded = true
+  if (this.load) this.load(el)
+}
+
+Nanocomponent.prototype._handleUnload = function (el) {
+  if (this.element) return // Debounce child-reorders
+  this._loaded = false
+  if (this.unload) this.unload(el)
+}
+
+Nanocomponent.prototype.createElement = function () {
+  throw new Error('nanocomponent: createElement should be implemented!')
+}
+
+Nanocomponent.prototype.update = function () {
+  throw new Error('nanocomponent: update should be implemented!')
+}
+
+},{"assert":25,"global/document":19,"nanomorph":32,"nanotiming":28,"on-load":40}],28:[function(require,module,exports){
+var assert = require('assert')
+
+var onIdle = require('./lib/on-idle')
+
+var perf
+var disabled = true
+try {
+  perf = window.performance
+  disabled = window.localStorage.DISABLE_NANOTIMING === 'true' || !perf.mark
+} catch (e) { }
+
+module.exports = nanotiming
+
+function nanotiming (name) {
+  assert.equal(typeof name, 'string', 'nanotiming: name should be type string')
+
+  if (disabled) return noop
+
+  var uuid = (perf.now() * 100).toFixed()
+  var startName = 'start-' + uuid + '-' + name
+  perf.mark(startName)
+
+  function end (cb) {
+    var endName = 'end-' + uuid + '-' + name
+    perf.mark(endName)
+
+    onIdle(function () {
+      var measureName = name + ' [' + uuid + ']'
+      perf.measure(measureName, startName, endName)
+      perf.clearMarks(startName)
+      perf.clearMarks(endName)
+      if (cb) cb(name)
+    })
+  }
+
+  end.uuid = uuid
+  return end
+}
+
+function noop (cb) {
+  if (cb) onIdle(cb)
+}
+
+},{"./lib/on-idle":29,"assert":12}],29:[function(require,module,exports){
+var assert = require('assert')
+
+var dftOpts = {}
+var hasWindow = typeof window !== 'undefined'
+var hasIdle = hasWindow && window.requestIdleCallback
+
+module.exports = onIdle
+
+function onIdle (cb, opts) {
+  opts = opts || dftOpts
+  var timerId
+
+  assert.equal(typeof cb, 'function', 'on-idle: cb should be type function')
+  assert.equal(typeof opts, 'object', 'on-idle: opts should be type object')
+
+  if (hasIdle) {
+    timerId = window.requestIdleCallback(function (idleDeadline) {
+      // reschedule if there's less than 10ms remaining on the tick
+      // and a timer did not expire
+      if (idleDeadline.timeRemaining() <= 10 && !idleDeadline.didTimeout) {
+        return onIdle(cb, opts)
+      } else {
+        cb(idleDeadline)
+      }
+    }, opts)
+    return window.cancelIdleCallback.bind(window, timerId)
+  } else if (hasWindow) {
+    timerId = setTimeout(cb, 0)
+    return clearTimeout.bind(window, timerId)
+  }
+}
+
+},{"assert":12}],30:[function(require,module,exports){
 var assert = require('assert')
 
 var safeExternalLink = /[noopener|noreferrer] [noopener|noreferrer]/
@@ -12664,7 +12947,7 @@ function href (cb, root) {
   })
 }
 
-},{"assert":12}],25:[function(require,module,exports){
+},{"assert":12}],31:[function(require,module,exports){
 var assert = require('assert')
 
 module.exports = nanolocation
@@ -12676,7 +12959,7 @@ function nanolocation () {
   return pathname + hash
 }
 
-},{"assert":12}],26:[function(require,module,exports){
+},{"assert":12}],32:[function(require,module,exports){
 var assert = require('assert')
 var morph = require('./lib/morph')
 
@@ -12827,7 +13110,7 @@ function same (a, b) {
   return false
 }
 
-},{"./lib/morph":28,"assert":22}],27:[function(require,module,exports){
+},{"./lib/morph":34,"assert":25}],33:[function(require,module,exports){
 module.exports = [
   // attribute events (can be set with attributes)
   'onclick',
@@ -12871,7 +13154,7 @@ module.exports = [
   'onfocusout'
 ]
 
-},{}],28:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var events = require('./events')
 var eventsLength = events.length
 
@@ -13037,7 +13320,7 @@ function updateAttribute (newNode, oldNode, name) {
   }
 }
 
-},{"./events":27}],29:[function(require,module,exports){
+},{"./events":33}],35:[function(require,module,exports){
 var reg = new RegExp('([^?=&]+)(=([^&]*))?', 'g')
 var assert = require('assert')
 
@@ -13055,7 +13338,7 @@ function qs (url) {
   return obj
 }
 
-},{"assert":12}],30:[function(require,module,exports){
+},{"assert":12}],36:[function(require,module,exports){
 'use strict'
 
 var assert = require('assert')
@@ -13092,7 +13375,7 @@ function nanoraf (render, raf) {
   }
 }
 
-},{"assert":12}],31:[function(require,module,exports){
+},{"assert":12}],37:[function(require,module,exports){
 var wayfarer = require('wayfarer')
 
 var isLocalFile = (/file:\/\//.test(typeof window === 'object' &&
@@ -13152,7 +13435,7 @@ function pathname (route, isElectron) {
   return route.replace(suffix, '').replace(normalize, '/')
 }
 
-},{"wayfarer":41}],32:[function(require,module,exports){
+},{"wayfarer":48}],38:[function(require,module,exports){
 var onIdle = require('on-idle')
 var assert = require('assert')
 
@@ -13195,7 +13478,7 @@ function noop (cb) {
   if (cb) onIdle(cb)
 }
 
-},{"assert":12,"on-idle":33}],33:[function(require,module,exports){
+},{"assert":12,"on-idle":39}],39:[function(require,module,exports){
 var assert = require('assert')
 
 var dftOpts = {}
@@ -13226,7 +13509,111 @@ function onIdle (cb, opts) {
   }
 }
 
-},{"assert":12}],34:[function(require,module,exports){
+},{"assert":12}],40:[function(require,module,exports){
+/* global MutationObserver */
+var document = require('global/document')
+var window = require('global/window')
+var assert = require('assert')
+var watch = Object.create(null)
+var KEY_ID = 'onloadid' + (new Date() % 9e6).toString(36)
+var KEY_ATTR = 'data-' + KEY_ID
+var INDEX = 0
+
+if (window && window.MutationObserver) {
+  var observer = new MutationObserver(function (mutations) {
+    if (Object.keys(watch).length < 1) return
+    for (var i = 0; i < mutations.length; i++) {
+      if (mutations[i].attributeName === KEY_ATTR) {
+        eachAttr(mutations[i], turnon, turnoff)
+        continue
+      }
+      eachMutation(mutations[i].removedNodes, turnoff)
+      eachMutation(mutations[i].addedNodes, turnon)
+    }
+  })
+  if (document.body) {
+    beginObserve(observer)
+  } else {
+    document.addEventListener('DOMContentLoaded', function (event) {
+      beginObserve(observer)
+    })
+  }
+}
+
+function beginObserve (observer) {
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeOldValue: true,
+    attributeFilter: [KEY_ATTR]
+  })
+}
+
+module.exports = function onload (el, on, off, caller) {
+  assert(document.body, 'on-load: will not work prior to DOMContentLoaded')
+  on = on || function () {}
+  off = off || function () {}
+  el.setAttribute(KEY_ATTR, 'o' + INDEX)
+  watch['o' + INDEX] = [on, off, 0, caller || onload.caller]
+  INDEX += 1
+  return el
+}
+
+module.exports.KEY_ATTR = KEY_ATTR
+module.exports.KEY_ID = KEY_ID
+
+function turnon (index, el) {
+  if (watch[index][0] && watch[index][2] === 0) {
+    watch[index][0](el)
+    watch[index][2] = 1
+  }
+}
+
+function turnoff (index, el) {
+  if (watch[index][1] && watch[index][2] === 1) {
+    watch[index][1](el)
+    watch[index][2] = 0
+  }
+}
+
+function eachAttr (mutation, on, off) {
+  var newValue = mutation.target.getAttribute(KEY_ATTR)
+  if (sameOrigin(mutation.oldValue, newValue)) {
+    watch[newValue] = watch[mutation.oldValue]
+    return
+  }
+  if (watch[mutation.oldValue]) {
+    off(mutation.oldValue, mutation.target)
+  }
+  if (watch[newValue]) {
+    on(newValue, mutation.target)
+  }
+}
+
+function sameOrigin (oldValue, newValue) {
+  if (!oldValue || !newValue) return false
+  return watch[oldValue][3] === watch[newValue][3]
+}
+
+function eachMutation (nodes, fn) {
+  var keys = Object.keys(watch)
+  for (var i = 0; i < nodes.length; i++) {
+    if (nodes[i] && nodes[i].getAttribute && nodes[i].getAttribute(KEY_ATTR)) {
+      var onloadid = nodes[i].getAttribute(KEY_ATTR)
+      keys.forEach(function (k) {
+        if (onloadid === k) {
+          fn(k, nodes[i])
+        }
+      })
+    }
+    if (nodes[i].childNodes.length > 0) {
+      eachMutation(nodes[i].childNodes, fn)
+    }
+  }
+}
+
+},{"assert":25,"global/document":19,"global/window":20}],41:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -13412,7 +13799,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],35:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 'use strict'
 
 /**
@@ -13442,7 +13829,7 @@ module.exports = function removeItems(arr, startIdx, removeCount)
   arr.length = len
 }
 
-},{}],36:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 module.exports = scrollToAnchor
 
 function scrollToAnchor (anchor, options) {
@@ -13454,10 +13841,10 @@ function scrollToAnchor (anchor, options) {
   }
 }
 
-},{}],37:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 module.exports = require('insert-css')
 
-},{"insert-css":20}],38:[function(require,module,exports){
+},{"insert-css":23}],45:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -13482,14 +13869,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],39:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],40:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -14079,7 +14466,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":39,"_process":34,"inherits":38}],41:[function(require,module,exports){
+},{"./support/isBuffer":46,"_process":41,"inherits":45}],48:[function(require,module,exports){
 var assert = require('assert')
 var trie = require('./trie')
 
@@ -14146,7 +14533,7 @@ function Wayfarer (dft) {
   }
 }
 
-},{"./trie":42,"assert":12}],42:[function(require,module,exports){
+},{"./trie":49,"assert":12}],49:[function(require,module,exports){
 var mutate = require('xtend/mutable')
 var assert = require('assert')
 var xtend = require('xtend')
@@ -14285,7 +14672,7 @@ Trie.prototype.mount = function (route, trie) {
   }
 }
 
-},{"assert":12,"xtend":43,"xtend/mutable":44}],43:[function(require,module,exports){
+},{"assert":12,"xtend":50,"xtend/mutable":51}],50:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -14306,7 +14693,7 @@ function extend() {
     return target
 }
 
-},{}],44:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 module.exports = extend
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -14325,13 +14712,13 @@ function extend(target) {
     return target
 }
 
-},{}],45:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 require('./lib/easeljs-0.8.2.combined.js')
 require('./lib/preloadjs-0.6.2.combined.js')
 require('./lib/soundjs-0.6.2.combined.js')
 require('./lib/tweenjs-0.6.2.combined.js')
 
-},{"./lib/easeljs-0.8.2.combined.js":46,"./lib/preloadjs-0.6.2.combined.js":47,"./lib/soundjs-0.6.2.combined.js":48,"./lib/tweenjs-0.6.2.combined.js":49}],46:[function(require,module,exports){
+},{"./lib/easeljs-0.8.2.combined.js":53,"./lib/preloadjs-0.6.2.combined.js":54,"./lib/soundjs-0.6.2.combined.js":55,"./lib/tweenjs-0.6.2.combined.js":56}],53:[function(require,module,exports){
 /*!
 * EaselJS
 * Visit http://createjs.com/ for documentation, updates and examples.
@@ -27746,7 +28133,7 @@ window.createjs = window.createjs || {};
 
 })();
 
-},{}],47:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 (function (global){
 /*!
 * PreloadJS
@@ -35050,7 +35437,7 @@ window.createjs = window.createjs || {};
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],48:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 /*!
 * SoundJS
 * Visit http://createjs.com/ for documentation, updates and examples.
@@ -43001,7 +43388,7 @@ window.createjs = window.createjs || {};
 	createjs.HTMLAudioPlugin = createjs.promote(HTMLAudioPlugin, "AbstractPlugin");
 }());
 
-},{}],49:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 /*!
 * TweenJS
 * Visit http://createjs.com/ for documentation, updates and examples.
