@@ -1,43 +1,53 @@
 var html = require('choo/html')
 var css = require('sheetify')
-var buttons = require("../buttons.json").scribeButtons
+var Nanocomponent = require('nanocomponent')
+var buttons = require('../buttons.json').scribeButtons
 
 css('../styles/scribeButton.css')
 
-function buttonGenerate (state, emit){
+class Component extends Nanocomponent {
+  constructor () {
+    super()
+  }
 
-  var render = function (button){
+  createElement (state, emit) {
     return html`
-      <button
-        type="button"
-        class=${button.class}
-        id=${button.id}
-        onclick=${onclick}
-        onblur=${onblur}>
-          ${button.text}
-      </button>
+      <div class="draw">
+        ${buttons.map(button => {
+          return html`
+            <button
+              type="button"
+              class=${button.class}
+              id=${button.id}
+              onclick=${handleClick(emit)}
+              onblur=${handleBlur(state)}>
+                ${button.text}
+            </button>
+          `
+        })}
+      </div>
     `
   }
 
-  function onclick(e){
+  update () {
+    return false
+  }
+}
+
+function handleClick (emit) {
+  return e => {
     emit('changeDraw', e.target.id)
   }
+}
 
-  function onblur(e){
-    setTimeout(()=>{
-      if (e.target.id === state.drawType){
+function handleBlur (state) {
+  return e => {
+    setTimeout(() => {
+      if (e.target.id === state.drawType) {
         e.target.focus()
       }
     }, 120)
   }
-
-  return render
 }
 
-module.exports = (state, emit)=>{
-  return html`
-    <div class="draw">
-      ${buttons.map(buttonGenerate(state, emit))}
-    </div>
-  `
-}
+module.exports = new Component()

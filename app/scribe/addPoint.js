@@ -1,7 +1,7 @@
 const { cursurable, movable, removable, ctrlable, preventable, draggable } = require('./decorate.js')
 var addCtrl = require('./addCtrl.js')
 
-module.exports = ({x, y, uid}, state, emitter)=>{
+module.exports = ({x, y, uid}, state, emitter) => {
   var point = new createjs.Shape()
   var color = uid === state.currentId ? '#000' : '#fff'
   point.graphics
@@ -24,8 +24,8 @@ module.exports = ({x, y, uid}, state, emitter)=>{
   container.addChild(point)
   stage.update()
 
-  emitter.on('changeCurrent', ()=>{
-    if (![state.preId, state.currentId].includes(uid)||state.preId === state.currentId) return
+  emitter.on('changeCurrent', () => {
+    if (![state.preId, state.currentId].includes(uid) || state.preId === state.currentId) return
 
     var color = point.uid === state.currentId ? '#000' : '#fff'
 
@@ -36,7 +36,7 @@ module.exports = ({x, y, uid}, state, emitter)=>{
     stage.update()
   })
 
-  emitter.on('remove', uid =>{
+  emitter.on('remove', uid => {
     if (point.uid !== uid) return
 
     container.removeChild(point)
@@ -44,7 +44,7 @@ module.exports = ({x, y, uid}, state, emitter)=>{
     stage.update()
   })
 
-  emitter.on('createCtrl', ({uid, x, y, isMirror})=>{
+  emitter.on('createCtrl', ({uid, x, y, isMirror}) => {
     if (point.uid !== uid) return
 
     addCtrl({uid, x, y, isMirror: isMirror}, state, emitter, point.x, point.y)

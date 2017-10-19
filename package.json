@@ -1,11 +1,12 @@
 {
   "name": "choo-scriber",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "scriber powered by choo",
   "main": "index.js",
   "scripts": {
     "start": "budo index.js --live",
-    "build": "node build.js"
+    "build": "node build.js",
+    "codeStyleFix": "standard --fix"
   },
   "author": "zhouhansen <z308114274@gmail.com>",
   "license": "MIT",
@@ -13,8 +14,10 @@
     "bootstrap": "4.0.0",
     "choo": "^6.4.2",
     "jquery": "^3.2.1",
+    "nanocomponent": "^6.4.2",
     "sheetify": "^6.2.0",
     "spinkit": "^1.2.5",
+    "standard": "^10.0.3",
     "yuki-createjs": "0.0.3"
   },
   "devDependencies": {

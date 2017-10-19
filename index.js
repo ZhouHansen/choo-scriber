@@ -30,14 +30,14 @@ app.route('/', mainView)
 app.route('/choo-scriber', mainView)
 app.mount('body')
 
-function mainView(state, emit){
+function mainView (state, emit) {
   return html`
     <body class=${prefix}>
       <div class="container">
-        ${storeButton(state, emit)}
+        ${storeButton.render(state, emit)}
         <div class="flex-box">
-          ${scribeButton(state, emit)}
-          ${scribeCanvas(state, emit)}
+          ${scribeButton.render(state, emit)}
+          ${scribeCanvas.render(state, emit)}
         </div>
       </div>
     </body>

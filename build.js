@@ -7,15 +7,15 @@ var minify = require('html-minifier').minify
 
 var b = browserify()
 
-mkdirp('./build', ()=>{
+mkdirp('./build', () => {
   console.log('create builds folder'.green)
   b.add('index.js')
-   .transform('sheetify',{ use: [ 'sheetify-inline', "sheetify-cssnext" ] })
-   .bundle((err, buf)=>{
-    fs.writeFile('./build/bundle.js', buf, ()=>{
-      console.log('create bundle.js'.green)
-    })
-  })
+   .transform('sheetify', { use: [ 'sheetify-inline', 'sheetify-cssnext' ] })
+   .bundle((err, buf) => {
+     fs.writeFile('./build/bundle.js', buf, () => {
+       console.log('create bundle.js'.green)
+     })
+   })
 
   var indexHtml = html`
     <!doctype html>
@@ -31,7 +31,7 @@ mkdirp('./build', ()=>{
     </html>
   `
 
-  fs.writeFile('./build/index.html', minify(indexHtml, {collapseWhitespace: true}), ()=>{
+  fs.writeFile('./build/index.html', minify(indexHtml, {collapseWhitespace: true}), () => {
     console.log('create index.html'.green)
   })
 })
