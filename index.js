@@ -39,6 +39,9 @@ function mainView (state, emit) {
           ${scribeButton.render(state, emit)}
           ${scribeCanvas.render(state, emit)}
         </div>
+        <a target="_blank" href="https://www.youtube.com/watch?v=ZVMYe-qiKlA">
+          how to use
+        </a>
       </div>
     </body>
   `
