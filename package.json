@@ -13,6 +13,7 @@
   "dependencies": {
     "bootstrap": "4.0.0",
     "choo": "^6.4.2",
+    "css-extract": "^1.2.0",
     "jquery": "^3.2.1",
     "nanocomponent": "^6.4.2",
     "sheetify": "^6.2.0",
