@@ -11,9 +11,11 @@
   "author": "zhouhansen <z308114274@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "bootstrap": "4.0.0",
+    "bootstrap": "4.0.0-beta.2",
     "choo": "^6.4.2",
+    "concat-stream": "^1.6.0",
     "css-extract": "^1.2.0",
+    "exorcist": "^1.0.0",
     "jquery": "^3.2.1",
     "nanocomponent": "^6.4.2",
     "sheetify": "^6.2.0",
