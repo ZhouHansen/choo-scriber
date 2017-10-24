@@ -4,6 +4,7 @@ var mkdirp = require('mkdirp')
 var browserify = require('browserify')
 var html = require('bel')
 var colors = require('colors')
+var tinyify = require('tinyify')
 var minify = require('html-minifier').minify
 
 var b = browserify()
@@ -14,6 +15,7 @@ var outdir = path.join(basedir, 'dist')
 mkdirp(outdir, () => {
   b.add(entry)
    .transform('sheetify', { use: [ 'sheetify-inline', 'sheetify-cssnext' ] })
+   .plugin('tinyify')
    .plugin('css-extract', { out: path.join(outdir, 'bundle.css') })
 
   console.log('create bundle.css'.green)

@@ -19,6 +19,7 @@
     "sheetify": "^6.2.0",
     "spinkit": "^1.2.5",
     "standard": "^10.0.3",
+    "tinyify": "^2.2.0",
     "yuki-createjs": "0.0.3"
   },
   "devDependencies": {
