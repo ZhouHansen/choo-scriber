@@ -8,20 +8,10 @@ var css = require('sheetify')
 
 window.$ = require('jquery')
 
-const prefix = css`
-  .flex-box{
-  	display: flex;
-  }
+const TITLE = '🚂🚋🚋 choo-scriber'
 
-  .container {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
-    margin-top: 20px;
-  }
-`
 css('bootstrap')
+css('./app/main.css')
 
 var app = choo()
 
@@ -31,8 +21,10 @@ app.route('/choo-scriber', mainView)
 app.mount('body')
 
 function mainView (state, emit) {
+  if (state.title !== TITLE) emit(state.events.DOMTITLECHANGE, TITLE)
+
   return html`
-    <body class=${prefix}>
+    <body>
       <div class="container">
         ${storeButton.render(state, emit)}
         <div class="flex-box">

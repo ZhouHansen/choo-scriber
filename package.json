@@ -4,17 +4,19 @@
   "description": "scriber powered by choo",
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js --live",
+    "start": "bankai start index.js",
     "build": "node build.js",
     "codeStyleFix": "standard --fix"
   },
   "author": "zhouhansen <z308114274@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "bankai": "^9.0.0-rc8",
     "bootstrap": "4.0.0-beta.2",
     "choo": "^6.4.2",
     "concat-stream": "^1.6.0",
     "css-extract": "^1.2.0",
+    "dedent": "^0.7.0",
     "exorcist": "^1.0.0",
     "jquery": "^3.2.1",
     "nanocomponent": "^6.4.2",

@@ -13,7 +13,7 @@ module.exports = ({x, y, uid}, state, emitter) => {
   point.x = x
   point.y = y
   point.uid = uid
-  console.log(123)
+  
   cursurable(point, state)
   movable(point, state, emitter)
   removable(point, state, emitter)

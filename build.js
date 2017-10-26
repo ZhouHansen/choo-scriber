@@ -4,7 +4,8 @@ var mkdirp = require('mkdirp')
 var browserify = require('browserify')
 var html = require('bel')
 var colors = require('colors')
-// var tinyify = require('tinyify')
+var tinyify = require('tinyify')
+var dedent = require('dedent')
 var exorcist = require('exorcist')
 var minify = require('html-minifier').minify
 var concat = require('concat-stream')
@@ -16,28 +17,55 @@ var outdir = path.join(basedir, 'dist')
 var mapfile  = path.join(outdir, 'bundle.js.map')
 var concatStream = concat(gotBundle)
 
+mkdirp(outdir, () => {
+  writeBundle()
+  writeHtml()
+  writeManifest ()
+})
+
 function gotBundle (buf) {
   fs.writeFile(path.join(outdir, 'bundle.js'), buf, () => {
+    console.log('create bundle.css'.green)
     console.log('create bundle.js'.green)
   })
 }
 
-mkdirp(outdir, () => {
+function writeBundle () {
   b.add(entry)
    .transform('sheetify', { use: [ 'sheetify-inline', 'sheetify-cssnext' ] })
    .plugin('css-extract', { out: path.join(outdir, 'bundle.css') })
-// .plugin('tinyify')
+   .plugin('tinyify')
    .bundle()
    .pipe(exorcist(mapfile))
    .pipe(concatStream)
+}
 
-  console.log('create bundle.css'.green)
+function writeManifest () {
+  var filename = path.join(outdir, 'manifest.json')
+  var file = dedent`
+  {
+    "name": "choo-scriber",
+    "short_name": "choo-scriber",
+    "description": "A very cute app",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "whitesmoke"
+  }
+  `
 
-  var indexHtml = html`
+  fs.writeFile(filename, file, () => {
+    console.log('create manifest.json'.green)
+  })
+}
+
+function writeHtml () {
+  var filename = path.join(outdir, 'index.html')
+  var file = html`
     <!doctype html>
     <html lang="en" dir="ltr">
     <head>
       <title>choo-scriber</title>
+      <link rel="manifest" href="manifest.json">
       <link rel="stylesheet" href="bundle.css">
       <meta charset="utf-8">
     </head>
@@ -48,7 +76,7 @@ mkdirp(outdir, () => {
     </html>
   `
 
-  fs.writeFile(path.join(outdir, 'index.html'), minify(indexHtml, {collapseWhitespace: true}), () => {
+  fs.writeFile(filename, minify(file, {collapseWhitespace: true}), () => {
     console.log('create index.html'.green)
   })
-})
+}
