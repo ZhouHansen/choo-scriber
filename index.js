@@ -20,6 +20,16 @@ app.route('/', mainView)
 app.route('/choo-scriber', mainView)
 app.mount('body')
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('https://zhouhansen.github.io/choo-scriber/sw.js').then(registration => {
+      console.log('register service worker successfully')
+    }).catch(err => {
+      console.log(err)
+    })
+  })
+}
+
 function mainView (state, emit) {
   if (state.title !== TITLE) emit(state.events.DOMTITLECHANGE, TITLE)
 

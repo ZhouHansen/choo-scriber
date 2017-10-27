@@ -20,7 +20,8 @@ var concatStream = concat(gotBundle)
 mkdirp(outdir, () => {
   writeBundle()
   writeHtml()
-  writeManifest ()
+  writeManifest()
+  writeServiceWorker()
 })
 
 function gotBundle (buf) {
@@ -78,5 +79,15 @@ function writeHtml () {
 
   fs.writeFile(filename, minify(file, {collapseWhitespace: true}), () => {
     console.log('create index.html'.green)
+  })
+}
+
+function writeServiceWorker () {
+  fs.readFile('sw.js', (err, data) => {
+    var filename = path.join(outdir, 'sw.js')
+
+    fs.writeFile(filename, data, () => {
+      console.log('create sw.js'.green)
+    })
   })
 }

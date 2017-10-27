@@ -27,7 +27,7 @@ class Component extends Nanocomponent {
     `
   }
 
-  load (state, emit) {
+  load (state, emit) {  
     window.stage = new createjs.Stage('canvas')
     window.stage.enableMouseOver()
     window.container = new createjs.Container()
