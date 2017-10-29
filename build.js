@@ -26,7 +26,6 @@ mkdirp(outdir, () => {
 
 function gotBundle (buf) {
   fs.writeFile(path.join(outdir, 'bundle.js'), buf, () => {
-    console.log('create bundle.css'.green)
     console.log('create bundle.js'.green)
   })
 }
@@ -34,11 +33,19 @@ function gotBundle (buf) {
 function writeBundle () {
   b.add(entry)
    .transform('sheetify', { use: [ 'sheetify-inline', 'sheetify-cssnext' ] })
-   .plugin('css-extract', { out: path.join(outdir, 'bundle.css') })
+   .plugin('css-extract', { out: writeCss })
    .plugin('tinyify')
    .bundle()
    .pipe(exorcist(mapfile))
    .pipe(concatStream)
+}
+
+function writeCss (){
+  return concat({ encoding: 'string' }, (str) => {
+    fs.writeFile(path.join(outdir, 'bundle.css'), str, () => {
+      console.log('create bundle.css'.green)
+    })
+  })
 }
 
 function writeManifest () {
