@@ -21,6 +21,7 @@
     "dedent": "^0.7.0",
     "documentify": "^3.0.0",
     "exorcist": "^1.0.0",
+    "favicons": "^4.8.6",
     "hyperstream": "^1.2.2",
     "inline-critical-css": "^1.1.0",
     "jquery": "^3.2.1",

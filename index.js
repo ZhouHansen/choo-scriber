@@ -8,7 +8,7 @@ var css = require('sheetify')
 
 window.$ = require('jquery')
 
-const TITLE = '🚂🚋🚋 choo-scriber'
+const TITLE = 'choo-scriber'
 
 css('bootstrap')
 css('./app/main.css')

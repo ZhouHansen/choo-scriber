@@ -13,6 +13,7 @@ var documentify = require('documentify')
 var hyperstream = require('hyperstream')
 var pump = require('pump')
 var critical = require('inline-critical-css')
+var favicons = require('favicons')
 var graph = require('buffer-graph')()
 
 var entry = 'index.js'
@@ -46,6 +47,10 @@ graph.on('change', (nodeName, edgeName, state) => {
     file = path.join(outdir, 'bundle.css')
     data = state.styles.bundle.buffer
     log = ' ✨  create bundle.css'
+  } else if (eventName === 'favicon:bundle') {
+    file = path.join(outdir, 'favicon.ico')
+    data = state.favicon.bundle.buffer
+    log = ' ✨  create favicon.ico'
   }
 
   if (file) {
@@ -77,7 +82,19 @@ graph.node('scripts', (state, createEdge) => {
   }
 })
 
-graph.node('documents', [ 'scripts:bundle', 'manifest:bundle', 'serviceWorker:bundle', 'styles:bundle' ], (state, createEdge) => {
+graph.node('favicon', (state, createEdge) => {
+  var fileName = path.join(basedir, 'app/assets/icon.png')
+
+  favicons(fileName, createFavIconOptions(), (err, res) => {
+    var icon = res.images.find((image) => {
+      return image.name === 'favicon.ico'
+    })
+
+    createEdge('bundle', icon.contents)
+  })
+})
+
+graph.node('documents', [ 'scripts:bundle', 'manifest:bundle', 'serviceWorker:bundle', 'styles:bundle', 'favicon:bundle' ], (state, createEdge) => {
   var body = '<div></div>'
   var language = 'en'
   var html = head(body, language)
@@ -91,7 +108,7 @@ graph.node('documents', [ 'scripts:bundle', 'manifest:bundle', 'serviceWorker:bu
   d.transform(descriptionTransform, { description: "A very cute app" })
   d.transform(titleTransform, { title: 'choo-scriber' })
   d.transform(criticalTransform, { css: state.styles.bundle.buffer })
-
+  d.transform(faviconTransform, { icon: state.favicon.bundle.buffer})
   var source = d.bundle()
 
   pump(source, concat({ encoding: 'buffer' }, sink))
@@ -103,6 +120,14 @@ graph.node('documents', [ 'scripts:bundle', 'manifest:bundle', 'serviceWorker:bu
   function head (body, lang) {
     var dir = 'ltr'
     return `<!DOCTYPE html><html lang="${lang}" dir="${dir}"><head></head>${body}</html>`
+  }
+
+  function faviconTransform (opts) {
+    var header = `
+      <link rel="icon" type="image/x-icon" href="favicon.ico">
+    `.replace(/\n +/g, '')
+
+    return addToHead(header)
   }
 
   function criticalTransform (opts) {
@@ -217,6 +242,20 @@ function createCleanCssOptions () {
       1: {
         specialComments: 0
       }
+    }
+  }
+}
+
+function createFavIconOptions () {
+  return {
+    icons: {
+      android: false,
+      appleIcon: false,
+      appleStartup: false,
+      favicons: true,
+      firefox: false,
+      windows: false,
+      yandex: false
     }
   }
 }
