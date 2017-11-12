@@ -1,6 +1,7 @@
 var addPoint = require('./scribe/addPoint.js')
 var addLine = require('./scribe/addLine.js')
 var moveContainer = require('./scribe/moveContainer.js')
+var choosriber = require('./choosriber.js')
 
 module.exports = function (state, emitter) {
   const INIT_DATA = {
@@ -146,42 +147,42 @@ module.exports = function (state, emitter) {
   })
 
   emitter.on('pulled', () => {
-    container.removeAllChildren()
+    choosriber.get((choodata) => {
+      container.removeAllChildren()
 
-    stage.update()
+      stage.update()
 
-    var scribeEvents = [
-      'removeOnlyCtrl',
-      'moveCtrl',
-      'createCtrl',
-      'removeMirrorCtrl',
-      'removeUnMirrorCtrl',
-      'changeCurrent',
-      'remove'
-    ]
-    scribeEvents.forEach(eventName => {
-      emitter.removeAllListeners(eventName)
+      var scribeEvents = [
+        'removeOnlyCtrl',
+        'moveCtrl',
+        'createCtrl',
+        'removeMirrorCtrl',
+        'removeUnMirrorCtrl',
+        'changeCurrent',
+        'remove'
+      ]
+      scribeEvents.forEach(eventName => {
+        emitter.removeAllListeners(eventName)
+      })
+
+      Object.assign(state, choodata)
+
+      state.fetch = true
+
+      moveContainer(state.container)
+
+      state.points.forEach((p, i) => {
+        emitter.emit('addPoint', p)
+        var ctrl = state.ctrls.find(ctrl => ctrl.uid === p.uid)
+        if (ctrl) {
+          emitter.emit('createCtrl', ctrl)
+        }
+      })
+
+      $('#' + state.drawType).focus()
+      state.fetch = false
+      emitter.emit('render')
     })
-
-    Object.assign(state, JSON.parse(localStorage.getItem('chooData')))
-
-    state.fetch = true
-
-    moveContainer(state.container)
-
-    state.points.forEach((p, i) => {
-      emitter.emit('addPoint', p)
-
-      var ctrl = state.ctrls.find(ctrl => ctrl.uid === p.uid)
-
-      if (ctrl) {
-        emitter.emit('createCtrl', ctrl)
-      }
-    })
-
-    $('#' + state.drawType).focus()
-    state.fetch = false
-    emitter.emit('render')
   })
 
   emitter.on('pushed', () => {

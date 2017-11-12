@@ -2,6 +2,7 @@ var html = require('choo/html')
 var css = require('sheetify')
 var Nanocomponent = require('nanocomponent')
 var buttons = require('../buttons.json').storeButtons
+var choosriber = require('../choosriber.js')
 
 css('../styles/storeButton.css')
 css('spinkit/css/spinkit.css')
@@ -59,7 +60,7 @@ function handleClick (action, state, emit) {
       emit('pushing')
       setTimeout(() => {
         emit('pushed')
-        localStorage.setItem('chooData', JSON.stringify(state))
+        choosriber.put(state)
       }, 500)
     }
   }

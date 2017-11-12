@@ -4,15 +4,19 @@
   "description": "scriber powered by choo",
   "main": "index.js",
   "scripts": {
-    "start": "bankai start index.js",
+    "start": "budo index.js --live",
     "build": "node build.js",
     "codeStyleFix": "standard --fix"
+  },
+  "browser": {
+    "leveldown": "level-js"
   },
   "author": "zhouhansen <z308114274@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "bankai": "^9.0.0-rc8",
     "bootstrap": "4.0.0-beta.2",
+    "budo": "^10.0.4",
     "buffer-graph": "^4.0.0",
     "choo": "^6.4.2",
     "clean-css": "^4.1.9",
@@ -25,6 +29,7 @@
     "hyperstream": "^1.2.2",
     "inline-critical-css": "^1.1.0",
     "jquery": "^3.2.1",
+    "level-js": "^2.2.4",
     "nanocomponent": "^6.4.2",
     "pump": "^1.0.2",
     "purify-css": "^1.2.5",
@@ -49,6 +54,7 @@
         "sheetify",
         {
           "u": [
+            "sheetify-inline",
             "sheetify-cssnext"
           ]
         }
