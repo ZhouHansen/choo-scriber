@@ -1,37 +1,37 @@
 {
-  "scribeButtons":[
+  "scribeButtons": [
     {
-      "text":"Line",
-      "id":"line",
-      "class":"btn btn-outline-success",
+      "text": "Line",
+      "id": "line",
+      "class": "f5 br2 ba ph2 pv2 mb4 db green pointer tc grow",
     },
     {
-      "text":"Select",
-      "id":"ctrlline",
-      "class":"btn btn-outline-success",
+      "text": "Select",
+      "id": "ctrlline",
+      "class": "f5 br2 ba ph2 pv2 mb4 db green pointer tc grow",
     },
     {
-      "text":"Move",
-      "id":"move",
-      "class":"btn btn-outline-success",
+      "text": "Move",
+      "id": "move",
+      "class": "f5 br2 ba ph2 pv2 mb4 db green pointer tc grow",
     },
     {
-      "text":"Remove",
-      "id":"remove",
-      "class":"btn btn-outline-danger",
+      "text": "Remove",
+      "id": "remove",
+      "class": "f5 br2 ba ph2 pv2 mb7 db red pointer tc grow",
     }
   ],
 
-  "storeButtons":[
+  "storeButtons": [
     {
-      "text":"Fetch",
-      "class":"btn btn-outline-primary crud",
-      "id":"fetch"
+      "text": "Fetch",
+      "class": "f5 br2 ba ph3 pv2 mb2 dib blue pointer grow",
+      "id": "fetch"
     },
     {
-      "text":"Save",
-      "class":"btn btn-outline-warning crud",
-      "id":"save"
+      "text": "Save",
+      "class": "f5 br2 ba ph3 pv2 mb2 dib gold pointer fr grow",
+      "id": "save"
     }
   ]
 }

@@ -10,8 +10,7 @@ window.$ = require('jquery')
 
 const TITLE = 'choo-scriber'
 
-css('bootstrap')
-css('./app/main.css')
+css('tachyons')
 
 var app = choo()
 
@@ -34,17 +33,15 @@ function mainView (state, emit) {
   if (state.title !== TITLE) emit(state.events.DOMTITLECHANGE, TITLE)
 
   return html`
-    <body>
-      <div class="container">
-        ${storeButton.render(state, emit)}
-        <div class="flex-box">
-          ${scribeButton.render(state, emit)}
-          ${scribeCanvas.render(state, emit)}
-        </div>
-        <a target="_blank" href="https://www.youtube.com/watch?v=ZVMYe-qiKlA">
-          how to use
-        </a>
+    <body class='mv3 mh5 bg-black-05'>
+      ${storeButton.render(state, emit)}
+      <div class='flex'>
+        ${scribeButton.render(state, emit)}
+        ${scribeCanvas.render(state, emit)}
       </div>
+      <a class='link blue' target='_blank' href='https://www.youtube.com/watch?v=ZVMYe-qiKlA'>
+        how to use
+      </a>
     </body>
   `
 }

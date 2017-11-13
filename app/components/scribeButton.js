@@ -1,9 +1,6 @@
 var html = require('choo/html')
-var css = require('sheetify')
 var Nanocomponent = require('nanocomponent')
 var buttons = require('../buttons.json').scribeButtons
-
-css('../styles/scribeButton.css')
 
 class Component extends Nanocomponent {
   constructor () {
@@ -12,17 +9,15 @@ class Component extends Nanocomponent {
 
   createElement (state, emit) {
     return html`
-      <div class="draw">
+      <div class="dib mt3">
         ${buttons.map(button => {
           return html`
-            <button
-              type="button"
+            <div
               class=${button.class}
               id=${button.id}
-              onclick=${handleClick(emit)}
-              onblur=${handleBlur(state)}>
-                ${button.text}
-            </button>
+              onclick=${handleClick(emit)}>
+              ${button.text}
+            </div>
           `
         })}
       </div>
@@ -37,16 +32,6 @@ class Component extends Nanocomponent {
 function handleClick (emit) {
   return e => {
     emit('changeDraw', e.target.id)
-  }
-}
-
-function handleBlur (state) {
-  return e => {
-    setTimeout(() => {
-      if (e.target.id === state.drawType) {
-        e.target.focus()
-      }
-    }, 120)
   }
 }
 

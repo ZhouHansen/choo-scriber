@@ -1,11 +1,7 @@
 var html = require('choo/html')
-var css = require('sheetify')
 var Nanocomponent = require('nanocomponent')
 var buttons = require('../buttons.json').storeButtons
 var choosriber = require('../choosriber.js')
-
-css('../styles/storeButton.css')
-css('spinkit/css/spinkit.css')
 
 class Component extends Nanocomponent {
   constructor () {
@@ -17,27 +13,13 @@ class Component extends Nanocomponent {
       <div>
         ${buttons.map(button => {
           return html`
-            <button
-              type="button"
+            <div
               class=${button.class}
               onclick=${handleClick(button.id, state, emit)}
               disabled=${state.fetch || state.save}
               id=${button.id}>
                 ${button.text}
-                ${(() => {
-                  if (state[button.id]) {
-                    return html`
-                      <div class="sk-three-bounce">
-                        <div class="sk-child sk-bounce1"></div>
-                        <div class="sk-child sk-bounce2"></div>
-                        <div class="sk-child sk-bounce3"></div>
-                      </div>
-                    `
-                  } else {
-                    return ''
-                  }
-                })()}
-            </button>
+            </div>
           `
         })}
       </div>
@@ -55,13 +37,13 @@ function handleClick (action, state, emit) {
       emit('pulling')
       setTimeout(() => {
         emit('pulled')
-      }, 500)
+      }, 0)
     } else if (action === 'save') {
       emit('pushing')
       setTimeout(() => {
         emit('pushed')
         choosriber.put(state)
-      }, 500)
+      }, 0)
     }
   }
 }

@@ -5,7 +5,23 @@ require('yuki-createjs')
 
 window.createjs = createjs
 
-css('../styles/scribeCanvas.css')
+css`
+  #canvas{
+    cursor:crosshair
+  }
+  #canvas.unable{
+  	cursor:not-allowed;
+  }
+  #canvas.remove{
+  	cursor: url('./app/assets/remove.png'), auto;
+  }
+  #canvas.ctrlline{
+  	cursor: url('./app/assets/ctrlline.png'), auto;
+  }
+  #canvas.move{
+  	cursor: move
+  }
+`
 
 class Component extends Nanocomponent {
   constructor () {
@@ -14,10 +30,11 @@ class Component extends Nanocomponent {
 
   createElement (state, emit) {
     return html`
-      <div class="canvaswrap">
+      <div class=" ma3 mr0 dib w-100 bw1 b--solid b--white relative overflow-hidden">
         <canvas
           width="1050"
           height="1000"
+          class="absolute"
           id="canvas"
           onmousedown=${onmousedown(state, emit)}
           onmousemove=${onmousemove(state, emit)}
@@ -27,7 +44,7 @@ class Component extends Nanocomponent {
     `
   }
 
-  load (state, emit) {  
+  load (state, emit) {
     window.stage = new createjs.Stage('canvas')
     window.stage.enableMouseOver()
     window.container = new createjs.Container()
