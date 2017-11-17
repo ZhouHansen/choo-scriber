@@ -30,7 +30,7 @@ class Component extends Nanocomponent {
 
   createElement (state, emit) {
     return html`
-      <div class=" ma3 mr0 dib w-100 bw1 b--solid b--white relative overflow-hidden">
+      <div class=" ma3 mr0 dib w-100 bw1 b--solid b--black-05 relative overflow-hidden">
         <canvas
           width="1050"
           height="1000"

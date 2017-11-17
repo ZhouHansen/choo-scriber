@@ -21,7 +21,7 @@ app.mount('body')
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('https://zhouhansen.github.io/choo-scriber/sw.js').then(registration => {
+    navigator.serviceWorker.register(`${window.location.href}sw.js`).then(registration => {
       console.log('register service worker successfully')
     }).catch(err => {
       console.log(err)
@@ -33,7 +33,7 @@ function mainView (state, emit) {
   if (state.title !== TITLE) emit(state.events.DOMTITLECHANGE, TITLE)
 
   return html`
-    <body class='mv3 mh5 bg-black-05'>
+    <body class='mv3 mh5'>
       ${storeButton.render(state, emit)}
       <div class='flex'>
         ${scribeButton.render(state, emit)}

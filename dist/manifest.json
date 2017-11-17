@@ -1,0 +1,8 @@
+{
+  "name": "choo-scriber",
+  "short_name": "choo-scriber",
+  "description": "A very cute app",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "white"
+}

@@ -94,17 +94,6 @@ graph.node('favicon', (state, createEdge) => {
   })
 })
 
-graph.node('sqqq', [ 'documents:bundle' ], (state, createEdge) => {
-  var script = `<body class="mv3 mh5 bg-black-05"><div id="ncid-4e02" data-nanocomponent="ncid-4e02">
-        <div id="fetch" class="f5 br2 ba ph3 pv2 mb2 dib blue pointer grow">Fetch</div><div id="save" class="f5 br2 ba ph3 pv2 mb2 dib gold pointer fr grow">Save</div></div><div class="flex"><div class="dib mt3" id="ncid-015e" data-nanocomponent="ncid-015e">
-        <div id="line" class="f5 br2 ba ph2 pv2 mb4 db green pointer tc grow">Line</div><div id="ctrlline" class="f5 br2 ba ph2 pv2 mb4 db green pointer tc grow">Select</div><div id="move" class="f5 br2 ba ph2 pv2 mb4 db green pointer tc grow">Move</div><div id="remove" class="f5 br2 ba ph2 pv2 mb7 db red pointer tc grow">Remove</div></div><div class=" ma3 mr0 dib w-100 bw1 b--solid b--white relative overflow-hidden" id="ncid-9bba" data-nanocomponent="ncid-9bba" data-onloadid8lku="o0"><canvas width="1050" height="1000" id="canvas" class="absolute"></canvas></div></div><a target="_blank" href="https://www.youtube.com/watch?v=ZVMYe-qiKlA" class="link blue">how to use</a></body>`
-    , style = String(state.scripts.style.buffer)
-    , bundle = purify(script, style, { minify: true })
-
-  bundle = clean.minify(bundle).styles
-  console.log(bundle)
-})
-
 graph.node('documents', [ 'scripts:bundle', 'manifest:bundle', 'serviceWorker:bundle', 'styles:bundle', 'favicon:bundle' ], (state, createEdge) => {
   var body = '<div></div>'
   var language = 'en'
@@ -232,9 +221,7 @@ graph.node('styles', [ 'scripts:style', 'scripts:bundle' ], (state, createEdge) 
   var script = String(state.scripts.bundle.buffer)
     , style = String(state.scripts.style.buffer)
     , bundle = purify(script, style, { minify: true })
-  console.log(style.length)
   bundle = clean.minify(bundle).styles
-  console.log(bundle.length)
   createEdge('bundle', Buffer.from(bundle))
 })
 
