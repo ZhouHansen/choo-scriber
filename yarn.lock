@@ -1112,6 +1112,12 @@ colors@~0.6.0-1:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-0.6.2.tgz#2423fe6678ac0c5dae8852e5d0e5be08c997abcc"
 
+combine-errors@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/combine-errors/-/combine-errors-3.0.1.tgz#79a04c22db8a6c5846a951dc41e8838f92e1c1e9"
+  dependencies:
+    custom-error-instance "2.1.1"
+
 combine-source-map@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/combine-source-map/-/combine-source-map-0.8.0.tgz#a58d0df042c186fcf822a8e8015f5450d2d79a8b"
@@ -1149,6 +1155,10 @@ commander@2.11.x, commander@^2.3.0, commander@~2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.11.0.tgz#157152fd1e7a6c8d98a5b715cf376df928004563"
 
+commander@2.5.0:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.5.0.tgz#d777b6a4d847d423e5d475da864294ac1ff5aa9d"
+
 commander@~2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.1.0.tgz#d121bbae860d9992a3d517ba96f56588e47c6781"
@@ -1174,6 +1184,10 @@ common-shakeify@^0.4.3:
 commondir@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-0.0.1.tgz#89f00fdcd51b519c578733fec563e6a6da7f5be2"
+
+component-type@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/component-type/-/component-type-1.2.1.tgz#8a47901700238e4fc32269771230226f24b415a9"
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -1447,6 +1461,10 @@ currently-unhandled@^0.4.1:
   resolved "https://registry.yarnpkg.com/currently-unhandled/-/currently-unhandled-0.4.1.tgz#988df33feab191ef799a61369dd76c17adf957ea"
   dependencies:
     array-find-index "^1.0.1"
+
+custom-error-instance@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/custom-error-instance/-/custom-error-instance-2.1.1.tgz#3cf6391487a6629a6247eb0ca0ce00081b7e361a"
 
 d3@^3.4.3:
   version "3.5.17"
@@ -1793,6 +1811,20 @@ envify@^4.1.0:
   dependencies:
     esprima "^4.0.0"
     through "~2.3.4"
+
+envobj@^1.0.2:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/envobj/-/envobj-1.0.4.tgz#827b5858ddcfc1453276eb92d82d1d9602395983"
+  dependencies:
+    combine-errors "3.0.1"
+    component-type "1.2.1"
+    envvar "1.1.0"
+    localenv "0.2.2"
+    object-assign "4.0.1"
+
+envvar@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/envvar/-/envvar-1.1.0.tgz#c25a0866edae87046d976c8db037489551639b94"
 
 error-ex@^1.2.0:
   version "1.3.1"
@@ -2258,6 +2290,10 @@ fast-levenshtein@~2.0.4:
 fast-safe-stringify@^1.0.8, fast-safe-stringify@^1.1.11:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-1.2.0.tgz#ebd42666fd18fe4f2ba4f0d295065f3f85cade96"
+
+fast-safe-stringify@^1.1.3:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-1.2.1.tgz#c4b2477dd585de4488aa6665d4acfae41462d999"
 
 favicons@^4.8.6:
   version "4.8.6"
@@ -2985,6 +3021,12 @@ http-gzip-maybe@^1.0.0:
   dependencies:
     readable-stream "^2.3.3"
 
+http-headers@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/http-headers/-/http-headers-3.0.1.tgz#1cbc691c45cdf6d6c1dc63bf368b2505f56ef839"
+  dependencies:
+    next-line "^1.0.0"
+
 http-signature@~1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/http-signature/-/http-signature-1.1.1.tgz#df72e267066cd0ac67fb76adf8e134a8fbcf91bf"
@@ -3629,6 +3671,12 @@ load-json-file@^2.0.0:
     pify "^2.0.0"
     strip-bom "^3.0.0"
 
+localenv@0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/localenv/-/localenv-0.2.2.tgz#c508f29d3485bdc9341d3ead17f61c5abd1b0bab"
+  dependencies:
+    commander "2.5.0"
+
 locate-path@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-2.0.0.tgz#2b568b265eec944c6d9c0de9c3dbbbca0354cd8e"
@@ -3720,6 +3768,12 @@ lodash@^4.0.0, lodash@^4.3.0:
 lodash@~2.4.1:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-2.4.2.tgz#fadd834b9683073da179b3eae6d9c0d15053f73e"
+
+log-http@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/log-http/-/log-http-1.0.0.tgz#a3ee81bd6f71ef7dbc577708fdbee0271ff78236"
+  dependencies:
+    request-stats "^2.0.1"
 
 loud-rejection@^1.0.0:
   version "1.6.0"
@@ -3824,6 +3878,20 @@ merge-source-map@^1.0.4:
   resolved "https://registry.yarnpkg.com/merge-source-map/-/merge-source-map-1.0.4.tgz#a5de46538dae84d4114cc5ea02b4772a6346701f"
   dependencies:
     source-map "^0.5.6"
+
+merry@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/merry/-/merry-5.4.0.tgz#3a0f9576afde3475efeecb0d268cbdf6cffd98e2"
+  dependencies:
+    envobj "^1.0.2"
+    fast-safe-stringify "^1.1.3"
+    from2-string "^1.1.0"
+    json-stream-to-object "^1.1.0"
+    log-http "^1.0.0"
+    pino "^4.0.0"
+    pino-colada "^1.4.0"
+    pump "^1.0.1"
+    server-router "^5.2.0"
 
 micromatch@^2.1.5, micromatch@^2.2.0:
   version "2.3.11"
@@ -4081,6 +4149,10 @@ ncp@~0.4.2:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/ncp/-/ncp-0.4.2.tgz#abcc6cbd3ec2ed2a729ff6e7c1fa8f01784a8574"
 
+next-line@^1.0.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/next-line/-/next-line-1.1.0.tgz#fcae57853052b6a9bae8208e40dd7d3c2d304603"
+
 no-case@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/no-case/-/no-case-2.3.2.tgz#60b813396be39b3f1288a4c1ed5d1e7d28b464ac"
@@ -4220,6 +4292,10 @@ number-is-nan@^1.0.0:
 oauth-sign@~0.8.1, oauth-sign@~0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
+
+object-assign@4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.0.1.tgz#99504456c3598b5cad4fc59c26e8a9bb107fe0bd"
 
 object-assign@^3.0.0:
   version "3.0.0"
@@ -4620,7 +4696,7 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
-pino-colada@^1.4.2:
+pino-colada@^1.4.0, pino-colada@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/pino-colada/-/pino-colada-1.4.2.tgz#a4b4d7e1afe95425ebc665da818c5266002d1324"
   dependencies:
@@ -4631,6 +4707,18 @@ pino-colada@^1.4.2:
     prettier-bytes "^1.0.3"
     pretty-ms "^2.1.0"
     split2 "^2.1.1"
+
+pino@^4.0.0:
+  version "4.10.1"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-4.10.1.tgz#292e14f6adb5fd005c7dfa209d9b755fe2d46c35"
+  dependencies:
+    chalk "^2.0.1"
+    fast-json-parse "^1.0.0"
+    fast-safe-stringify "^1.1.11"
+    flatstr "^1.0.4"
+    pump "^1.0.2"
+    quick-format-unescaped "^1.1.1"
+    split2 "^2.0.1"
 
 pino@^4.7.1:
   version "4.8.1"
@@ -5451,6 +5539,13 @@ request-progress@~2.0.1:
   dependencies:
     throttleit "^1.0.0"
 
+request-stats@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/request-stats/-/request-stats-2.0.1.tgz#ed9a6381566af6bbd60fe2d5cfaf46f912b8b03e"
+  dependencies:
+    http-headers "^3.0.1"
+    once "^1.4.0"
+
 request@2, request@^2.65.0:
   version "2.83.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.83.0.tgz#ca0b65da02ed62935887808e6f510381034e3356"
@@ -5693,6 +5788,14 @@ serve-static@^1.10.0:
     escape-html "~1.0.3"
     parseurl "~1.3.2"
     send "0.16.1"
+
+server-router@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/server-router/-/server-router-5.2.0.tgz#dfe63093650fe8d8340d92d47287360377e76d10"
+  dependencies:
+    pathname-match "^1.1.3"
+    urlencode "^1.1.0"
+    wayfarer "^6.1.4"
 
 server-router@^6.0.0:
   version "6.0.0"

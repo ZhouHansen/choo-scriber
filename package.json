@@ -30,6 +30,7 @@
     "inline-critical-css": "^1.1.0",
     "jquery": "^3.2.1",
     "level-js": "^2.2.4",
+    "merry": "^5.4.0",
     "nanocomponent": "^6.4.2",
     "pump": "^1.0.2",
     "purify-css": "^1.2.5",
