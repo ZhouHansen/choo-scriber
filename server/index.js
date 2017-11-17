@@ -1,7 +1,7 @@
 var merry = require('merry')
 var send = require('send')
 
-var app = merry({ env: { PORT: 8080 } })
+var app = merry({ env: { PORT: 80 } })
 
 app.use((req, res, ctx) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
