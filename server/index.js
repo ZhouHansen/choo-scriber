@@ -1,5 +1,5 @@
 var merry = require('merry')
-var pino = require('pino')
+var send = require('send')
 
 var app = merry({ env: { PORT: 8080 } })
 
