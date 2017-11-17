@@ -1,7 +1,11 @@
 var merry = require('merry')
-var send = require('send')
+var pino = require('pino')
 
 var app = merry({ env: { PORT: 8080 } })
+
+app.use((req, res, ctx) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+})
 
 app.route('GET', '/:static', (req, res, ctx) => {
   var path = `dist/${ctx.params.static.length ? ctx.params.static : 'index.html'}`
