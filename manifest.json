@@ -4,5 +4,5 @@
   "description": "A very cute app",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "whitesmoke"
+  "background_color": "white"
 }

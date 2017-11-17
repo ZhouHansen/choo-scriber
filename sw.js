@@ -4,7 +4,6 @@ var VERSION = String(Date.now())
 var URLS = [
   './bundle.js',
   './bundle.css',
-  './bundle.js.map',
   './index.html',
   './manifest.json'
 ]
