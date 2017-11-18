@@ -10,6 +10,10 @@ window.$ = require('jquery')
 
 const TITLE = 'choo-scriber'
 
+if (window.location.href === 'https://zhouhansen.github.io/choo-scriber/') {
+  window.location.href = 'http://www.choo-scriber.online/'
+}
+
 css('tachyons')
 
 var app = choo()
